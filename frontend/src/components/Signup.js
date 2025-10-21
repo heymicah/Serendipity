@@ -171,18 +171,18 @@ const Signup = () => {
   ];
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h1>Sign Up</h1>
-
-        {/* <div style={{ marginBottom: '20px', color: '#666' }}>
-          Step {step} of 4
-        </div> */}
-        <ProgressBar 
-          currentStep={step} 
+    <div className="auth-container signup-layout">
+      <div className="progress-bar-container">
+        <ProgressBar
+          currentStep={step}
           totalSteps={4}
-          labels={['Name', 'Account', 'Profile', 'Interests']}
+          labels={['Personal details', 'Socials', 'Interests', 'Preferences']}
         />
+      </div>
+
+      <div className="auth-card">
+        <h1>{step === 1 ? "Welcome, first things first..." : "Sign Up"}</h1>
+        {step === 1 && <p style={{ fontSize: '18px', fontWeight: 'normal', marginTop: '-15px', textAlign: 'center', fontStyle: 'italic' }}>Tell us about yourself</p>}
 
         {error && <div className="error-message">{error}</div>}
 

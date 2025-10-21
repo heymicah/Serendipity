@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital@0;1&family=Raleway:wght@300;400;500;600;700&display=swap');
 
-.auth-container {
+/* Login page layout - horizontal with branding on left */
+.auth-container.login-layout {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   min-height: 100vh;
@@ -11,6 +13,49 @@
   background: white;
   position: relative;
   overflow: hidden;
+}
+
+/* Signup page layout - vertical centered */
+.auth-container.signup-layout {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: white;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Legacy support for pages without specific class */
+.auth-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  padding-left: 10%;
+  padding-right: 10%;
+  background: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar-container {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 20px 30px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+  width: 100%;
+  max-width: 580px;
+  position: relative;
+  z-index: 10;
 }
 
 .auth-branding {
@@ -38,7 +83,8 @@
   line-height: 1.4;
 }
 
-.auth-container::before {
+/* Gradient orb for login page - positioned between branding and card */
+.auth-container.login-layout::before {
   content: '';
   position: absolute;
   top: 50%;
@@ -56,6 +102,43 @@
   filter: blur(40px);
   animation: morph 8s ease-in-out infinite;
   z-index: 0;
+}
+
+/* Gradient orb for signup page with speckled/grainy texture */
+.auth-container.signup-layout::before {
+  content: '';
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 900px;
+  height: 700px;
+  background:
+    radial-gradient(ellipse at 50% 50%,
+      rgba(255, 180, 140, 0.8) 0%,
+      rgba(255, 200, 160, 0.7) 25%,
+      rgba(255, 210, 180, 0.6) 50%,
+      rgba(255, 220, 200, 0.5) 75%,
+      rgba(255, 230, 210, 0.3) 90%,
+      transparent 100%);
+  filter: blur(60px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Add grain/noise texture overlay for speckled effect */
+.auth-container.signup-layout::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.3;
+  mix-blend-mode: overlay;
 }
 
 @keyframes morph {
@@ -90,6 +173,20 @@
   z-index: 1;
   font-family: 'Raleway', sans-serif;
 }
+
+/* Signup page card - same width and style as progress bar */
+.signup-layout .auth-card {
+  width: 100%;
+  max-width: 580px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+}
+
 
 .auth-card h1 {
   margin-bottom: 30px;

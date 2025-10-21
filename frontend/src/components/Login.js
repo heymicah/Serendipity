@@ -41,7 +41,7 @@ const Login = () => {
   };
 
   return (
-    <div className="auth-container">
+    <div className="auth-container login-layout">
       <div className="auth-branding">
         <h1 className="brand-title">serendipity</h1>
         <p className="brand-subtitle">(n.) the art of finding people you didn't know you were missing</p>

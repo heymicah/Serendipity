@@ -2,89 +2,71 @@ import React from 'react';
 
 const ProgressBar = ({ currentStep, totalSteps, labels }) => {
   return (
-    <div style={{ width: '100%', marginBottom: '30px' }}>
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between',
-        position: 'relative',
-        marginBottom: '10px'
-      }}>
-        {/* Progress Line Background */}
-        <div style={{
-          position: 'absolute',
-          top: '15px',
-          left: '0',
-          right: '0',
-          height: '4px',
-          backgroundColor: '#e0e0e0',
-          zIndex: 0
-        }} />
-        
-        {/* Progress Line Filled */}
-        <div style={{
-          position: 'absolute',
-          top: '15px',
-          left: '0',
-          width: `${((currentStep - 1) / (totalSteps - 1)) * 100}%`,
-          height: '4px',
-          backgroundColor: '#4CAF50',
-          transition: 'width 0.3s ease',
-          zIndex: 1
-        }} />
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '8px',
+      padding: '10px 0'
+    }}>
+      {[...Array(totalSteps)].map((_, index) => {
+        const stepNumber = index + 1;
+        const isCompleted = stepNumber < currentStep;
+        const isCurrent = stepNumber === currentStep;
 
-        {/* Step Circles */}
-        {[...Array(totalSteps)].map((_, index) => {
-          const stepNumber = index + 1;
-          const isCompleted = stepNumber < currentStep;
-          const isCurrent = stepNumber === currentStep;
-          
-          return (
-            <div
-              key={stepNumber}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                position: 'relative',
-                zIndex: 2
-              }}
-            >
+        return (
+          <React.Fragment key={stepNumber}>
+            {/* Step Item */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              {/* Circle with Number */}
               <div style={{
                 width: '32px',
                 height: '32px',
                 borderRadius: '50%',
-                backgroundColor: isCompleted || isCurrent ? '#4CAF50' : '#e0e0e0',
-                color: 'white',
+                backgroundColor: isCurrent ? '#1a1a1a' : (isCompleted ? '#1a1a1a' : '#f0f0f0'),
+                color: isCurrent || isCompleted ? 'white' : '#999',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontWeight: 'bold',
+                fontWeight: '600',
                 fontSize: '14px',
                 transition: 'all 0.3s ease',
-                border: isCurrent ? '3px solid #45a049' : 'none',
-                boxShadow: isCurrent ? '0 0 0 4px rgba(76, 175, 80, 0.2)' : 'none'
+                flexShrink: 0
               }}>
-                {isCompleted ? '✓' : stepNumber}
+                {stepNumber}
               </div>
+
+              {/* Label */}
+              {labels && labels[index] && (
+                <span style={{
+                  fontSize: '13px',
+                  fontWeight: '500',
+                  color: isCurrent ? '#1a1a1a' : (isCompleted ? '#1a1a1a' : '#999'),
+                  whiteSpace: 'nowrap',
+                  transition: 'color 0.3s ease'
+                }}>
+                  {labels[index]}
+                </span>
+              )}
             </div>
-          );
-        })}
-      </div>
-      
-      {/* Step Labels */}
-      {labels && labels.length === totalSteps && (
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between',
-          marginTop: '8px'
-        }}>
-          {labels.map((label, index) => (
-            <span key={index} style={{ fontSize: '12px', color: '#666' }}>
-              {label}
-            </span>
-          ))}
-        </div>
-      )}
+
+            {/* Arrow between steps */}
+            {stepNumber < totalSteps && (
+              <div style={{
+                fontSize: '20px',
+                color: '#d0d0d0',
+                fontWeight: '300'
+              }}>
+                ›
+              </div>
+            )}
+          </React.Fragment>
+        );
+      })}
     </div>
   );
 };
