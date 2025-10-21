@@ -42,6 +42,10 @@ const Login = () => {
 
   return (
     <div className="auth-container">
+      <div className="auth-branding">
+        <h1 className="brand-title">serendipity</h1>
+        <p className="brand-subtitle">(n.) finding something good without looking for it</p>
+      </div>
       <div className="auth-card">
         <h1>Login</h1>
         {error && <div className="error-message">{error}</div>}
