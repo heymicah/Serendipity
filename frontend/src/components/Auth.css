@@ -222,7 +222,7 @@
 .auth-button {
   width: 100%;
   padding: 12px;
-  background-color: #007bff;
+  background-color: rgb(249, 149, 56);
   color: white;
   border: none;
   border-radius: 4px;
@@ -233,7 +233,7 @@
 }
 
 .auth-button:hover:not(:disabled) {
-  background-color: #0056b3;
+  background-color: rgb(200, 115, 35);
 }
 
 .auth-button:disabled {
@@ -298,8 +298,8 @@
 .form-group select.selected {
   background-color: #ffffff;
   color: #333;
-  border-left: 5px solid #007bff;
-  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+  border-left: 5px solid rgba(255, 179, 107, 1);
+  box-shadow: 0 2px 8px rgba(255, 179, 107, 0.1);
   background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23007bff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 16px center;
@@ -308,7 +308,7 @@
 /* Focus state */
 .form-group select:focus {
   outline: none;
-  border-color: #007bff;
+  border-color: rgba(255, 179, 107, 0.7);
 }
 
 
@@ -321,7 +321,7 @@
   margin: 6px;
   background-color: #ffffff;
   color: #333;
-  border: 2px solid #007bff;
+  border: 2px solid rgba(255, 179, 107, 0.7);
   border-radius: 25px;
   font-size: 15px;
   font-weight: 500;
@@ -331,18 +331,18 @@
 }
 
 .interest-bubble.selected {
-  background-color: #007bff;
+  background-color: rgb(249, 149, 56);
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(255, 179, 107, 1);
 }
 
 .interest-bubble:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(255, 179, 107, 0.7);
 }
 
 .interest-bubble.selected:hover {
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+  box-shadow: 0 4px 12px rgba(255, 179, 107, 0.7);
 }
 
 .interests-container {

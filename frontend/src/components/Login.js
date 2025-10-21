@@ -10,9 +10,14 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
+  // grey out box until email and pass typed
+  const isFormEmpty = email.trim() === '' || password.trim() === '';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (isFormEmpty) return;
+    
     setError('');
     setLoading(true);
 
@@ -70,7 +75,16 @@ const Login = () => {
               required
             />
           </div>
-          <button type="submit" disabled={loading} className="auth-button">
+          <button 
+            type="submit" 
+            disabled={loading || isFormEmpty} 
+            className="auth-button"
+            style={{
+              backgroundColor: isFormEmpty ? '#9ca3af' : '',
+              cursor: isFormEmpty ? 'not-allowed' : 'pointer',
+              opacity: isFormEmpty ? 0.6 : 1
+            }}
+          >
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>

@@ -1,20 +1,21 @@
 import React from 'react';
 
-const EmailValidationIndicator = ({ isValid, message }) => {
+const EmailValidationIndicator = ({ isValid, message, isEmpty }) => {
+  const isGrayed = isEmpty && !isValid;
   return (
     <div style={{
       display: 'flex',
       alignItems: 'center',
       marginTop: '8px',
       fontSize: '13px',
-      color: isValid ? '#4CAF50' : '#dc3545',
+      color: isValid ? '#4CAF50' : isGrayed ? '#9ca3af' : '#dc3545',
       transition: 'color 0.3s ease'
     }}>
       <div style={{
         width: '20px',
         height: '20px',
         borderRadius: '50%',
-        backgroundColor: isValid ? '#4CAF50' : '#dc3545',
+        backgroundColor: isValid ? '#4CAF50' : isGrayed ? '#9ca3af' : '#dc3545',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

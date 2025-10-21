@@ -228,6 +228,7 @@ const Signup = () => {
                 <EmailValidationIndicator 
                   isValid={emailValid}
                   message="Email must end with .edu"
+                  isEmpty={formData.email.trim() === ''}
                 />
               </div>
               <div className="form-group">
@@ -238,6 +239,11 @@ const Signup = () => {
                   value={formData.password}
                   onChange={(e) => handleChange('password', e.target.value)}
                   required
+                />
+                <EmailValidationIndicator 
+                  isValid={passwordValid}
+                  message="Password must be at least 6 characters"
+                  isEmpty={formData.password.trim() === ''}
                 />
               </div>
             </>
