@@ -1,4 +1,4 @@
-.home-container {
+/* .home-container {
   min-height: 100vh;
   background-color: #f5f5f5;
 }
@@ -54,4 +54,91 @@
 .welcome-section p {
   color: #666;
   font-size: 16px;
+} */
+
+
+.home-container {
+  min-height: 100vh;
+  background-color: #fafafa;
+  font-family: Arial, sans-serif;
+}
+
+/* Navbar Styles */
+.navbar {
+  background-color: white;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 15px 40px;
+}
+
+.navbar-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-logo {
+  margin: 0;
+  color: #333;
+  font-size: 24px;
+  font-weight: 300;
+  letter-spacing: 2px;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.nav-link {
+  color: #999;
+  text-decoration: none;
+  font-size: 14px;
+  padding-bottom: 20px;
+  transition: color 0.3s ease;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: #333;
+}
+
+.nav-link.active {
+  color: #333;
+  font-weight: 500;
+  border-bottom: 2px solid #007bff;
+}
+
+/* Home Content */
+.home-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+/* Welcome Section */
+.welcome-section {
+  margin-bottom: 60px;
+  text-align: center;
+}
+
+.welcome-title {
+  font-size: 48px;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: 300;
+}
+
+.welcome-subtitle {
+  color: #999;
+  font-size: 16px;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+/* Remove old styles */
+.logout-button {
+  display: none;
 }

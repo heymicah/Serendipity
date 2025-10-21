@@ -23,24 +23,14 @@ const Signup = () => {
   const { login } = useAuth();
   // validate email
   const [emailValid, setEmailValid] = useState(false);
-  // validate password
-  const [passwordValid, setPasswordValid] = useState(false);
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     setError('');
-    // email
+    // Validate email if the field being changed is email
     if (field === 'email') {
       setEmailValid(validateEmail(value));
     }
-    // password
-    if (field === 'password') {
-      setPasswordValid(validatePassword(value));
-    }
-  };
-  // validate password
-  const validatePassword = (password) => {
-    return password.length >= 6;
   };
 
   const handleInterestToggle = (interest) => {
@@ -116,8 +106,7 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      // LOCALHOST TO 127.0.0.1
-      const response = await fetch('http://127.0.0.1:5000/api/signup', {
+      const response = await fetch('http://localhost:5000/api/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -146,22 +135,6 @@ const Signup = () => {
       setError(err.message);
     } finally {
       setLoading(false);
-    }
-  };
-
-  // disable next
-  const isStepComplete = () => {
-    switch (step) {
-      case 1:
-        return formData.firstName && formData.lastName;
-      case 2:
-        return formData.email && formData.password && emailValid && passwordValid;
-      case 3:
-        return formData.gender && formData.school && formData.gradeLevel;
-      case 4:
-        return formData.interests.length > 0;
-      default:
-        return false;
     }
   };
 
@@ -252,7 +225,6 @@ const Signup = () => {
                   id="gender"
                   value={formData.gender}
                   onChange={(e) => handleChange('gender', e.target.value)}
-                  className={formData.gender ? 'selected' : 'unselected'}
                   required
                 >
                   <option value="">Select...</option>
@@ -266,10 +238,9 @@ const Signup = () => {
               <div className="form-group">
                 <label htmlFor="school">School</label>
                 <select
-                  id="school"
-                  value={formData.school}
+                  id="gender"
+                  value={formData.gender}
                   onChange={(e) => handleChange('school', e.target.value)}
-                  className={formData.school ? 'selected' : 'unselected'}
                   required
                 >
                   <option value="">Select...</option>
@@ -284,7 +255,6 @@ const Signup = () => {
                   id="gradeLevel"
                   value={formData.gradeLevel}
                   onChange={(e) => handleChange('gradeLevel', e.target.value)}
-                  className={formData.gradeLevel ? 'selected' : 'unselected'}
                   required
                 >
                   <option value="">Select...</option>
@@ -297,25 +267,25 @@ const Signup = () => {
             </>
           )}
 
-          {/* Step 4: Interests */}
-          {step === 4 && (
-          <>
-              <div className="form-group">
-              <label>Interests (select at least one)</label>
-              <div className="interests-container">
-                  {interestOptions.map(interest => (
-                  <div
-                      key={interest}
-                      className={`interest-bubble ${formData.interests.includes(interest) ? 'selected' : ''}`}
-                      onClick={() => handleInterestToggle(interest)}
-                  >
-                      {interest}
-                  </div>
-                  ))}
-              </div>
-              </div>
-          </>
-          )}
+        {/* Step 4: Interests */}
+        {step === 4 && (
+        <>
+            <div className="form-group">
+            <label>Interests (select at least one)</label>
+            <div className="interests-container">
+                {interestOptions.map(interest => (
+                <div
+                    key={interest}
+                    className={`interest-bubble ${formData.interests.includes(interest) ? 'selected' : ''}`}
+                    onClick={() => handleInterestToggle(interest)}
+                >
+                    {interest}
+                </div>
+                ))}
+            </div>
+            </div>
+        </>
+        )}
 
           {/* Navigation Buttons */}
           <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
@@ -333,7 +303,6 @@ const Signup = () => {
               <button
                 type="button"
                 onClick={handleNext}
-                disabled={!isStepComplete()}
                 className="auth-button"
                 style={{ flex: 1 }}
               >
@@ -342,7 +311,7 @@ const Signup = () => {
             ) : (
               <button
                 type="submit"
-                disabled={loading || !isStepComplete()}
+                disabled={loading}
                 className="auth-button"
                 style={{ flex: 1 }}
               >
@@ -351,14 +320,10 @@ const Signup = () => {
             )}
           </div>
         </form>
-        {step === 1 ? (
-          <p className="auth-link" style={{ marginTop: '20px' }}>
+
+        <p className="auth-link" style={{ marginTop: '20px' }}>
           Already have an account? <Link to="/login">Login</Link>
         </p>
-        ) : (
-          <p></p>
-        )}
-        
       </div>
     </div>
   );
