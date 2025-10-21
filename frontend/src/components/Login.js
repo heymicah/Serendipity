@@ -44,7 +44,7 @@ const Login = () => {
     <div className="auth-container">
       <div className="auth-branding">
         <h1 className="brand-title">serendipity</h1>
-        <p className="brand-subtitle">(n.) finding something good without looking for it</p>
+        <p className="brand-subtitle">(n.) the art of finding people you didn't know you were missing</p>
       </div>
       <div className="auth-card">
         <h1>Login</h1>
