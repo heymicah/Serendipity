@@ -19,7 +19,7 @@ const EventGrid = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
 
-      const response = await fetch(`http://localhost:5000/api/events/category/${category}`, {
+      const response = await fetch(`http://localhost:5001/api/events/category/${category}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

@@ -16,7 +16,7 @@ const Profile = () => {
     const fetchUserProfile = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://127.0.0.1:5000/api/profile', {
+            const response = await fetch('http://127.0.0.1:5001/api/profile', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -37,7 +37,7 @@ const Profile = () => {
     const fetchUserEvents = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://127.0.0.1:5000/api/user/events', {
+            const response = await fetch('http://127.0.0.1:5001/api/user/events', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
