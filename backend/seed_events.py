@@ -308,9 +308,29 @@ test_events = [
 
 def seed_events():
     try:
+        # Get all users to assign events to
+        all_users = list(db.users.find())
+        user_ids = [str(user['_id']) for user in all_users]
+
+        if user_ids:
+            print(f"Found {len(user_ids)} users, will register them for some events")
+            for user in all_users:
+                print(f"  - {user.get('email')}")
+
         # Clear existing events (optional - remove if you want to keep existing data)
         print("Clearing existing events...")
         db.events.delete_many({})
+
+        # Add registered_users field to some events if we have users
+        if user_ids:
+            # Register all users to first 8 events (mix of categories)
+            for i in range(min(8, len(test_events))):
+                test_events[i]['registered_users'] = user_ids
+
+        # Add empty registered_users array to events without it
+        for event in test_events:
+            if 'registered_users' not in event:
+                event['registered_users'] = []
 
         # Insert test events
         print(f"Inserting {len(test_events)} test events...")

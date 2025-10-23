@@ -1,22 +1,291 @@
 .profile-container {
+    min-height: 100vh;
+    background: #fafafa;
+    font-family: 'Raleway', sans-serif;
+    padding-bottom: 60px;
+}
+
+/* Loading and Error States */
+.loading-message,
+.error-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+    font-size: 18px;
+    color: #666;
     font-family: 'Raleway', sans-serif;
 }
 
+/* User Info Section */
 .user-info {
     display: flex;
     flex-direction: row;
-    gap: 1rem;
-    align-items: center;
+    gap: 4rem;
+    align-items: flex-start;
     justify-content: center;
-    margin-top: 5em;
-    margin-bottom: 100px;
+    max-width: 1100px;
+    margin: 100px auto 80px auto;
+    padding: 0 48px;
 }
 
 .user-image {
-    flex: 1; 
+    flex: 0 0 280px;
 }
+
+.user-image img {
+    width: 280px;
+    height: 280px;
+    border-radius: 20px;
+    object-fit: cover;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.default-avatar {
+    width: 280px;
+    height: 280px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 72px;
+    font-weight: 600;
+    color: white;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    letter-spacing: 4px;
+}
+
 .user-text-info {
     flex: 1;
 }
 
+.user-text-info h1 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 42px;
+    font-weight: normal;
+    color: #333;
+    margin: 0 0 8px 0;
+}
 
+.user-text-info h2 {
+    font-size: 20px;
+    font-weight: 400;
+    color: #666;
+    margin: 0 0 24px 0;
+}
+
+.user-text-info h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 32px 0 12px 0;
+}
+
+.user-bio {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #555;
+    margin: 16px 0;
+    font-weight: 300;
+}
+
+.user-bio.placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+.interests-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.interests-list li {
+    background: white;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #555;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+}
+
+.interests-list li:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.no-interests {
+    color: #999;
+    font-size: 14px;
+    font-style: italic;
+}
+
+/* User Events Section */
+.user-events {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 48px;
+}
+
+.user-events h2 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 36px;
+    font-weight: normal;
+    color: #333;
+    text-align: center;
+    margin: 0 0 48px 0;
+}
+
+.no-events-message {
+    text-align: center;
+    padding: 60px 24px;
+}
+
+.no-events-message p {
+    font-size: 18px;
+    color: #666;
+    margin: 8px 0;
+    font-weight: 300;
+}
+
+/* Events Grid */
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+.profile-event-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+}
+
+.profile-event-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.profile-event-image {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    background: #f5f5f5;
+}
+
+.profile-event-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.profile-event-card:hover .profile-event-image img {
+    transform: scale(1.05);
+}
+
+.profile-event-content {
+    padding: 20px;
+}
+
+.profile-event-content h3 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 20px;
+    font-weight: normal;
+    color: #333;
+    margin: 0 0 12px 0;
+    line-height: 1.4;
+}
+
+.event-category-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+.event-detail {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #555;
+    font-weight: 300;
+}
+
+.detail-icon {
+    font-size: 16px;
+    width: 20px;
+    display: inline-block;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .user-info {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 0 24px;
+    }
+
+    .user-image {
+        flex: 0 0 auto;
+    }
+
+    .user-text-info {
+        max-width: 600px;
+    }
+
+    .interests-list {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .user-info {
+        margin: 80px auto 60px auto;
+    }
+
+    .user-image img,
+    .default-avatar {
+        width: 200px;
+        height: 200px;
+    }
+
+    .default-avatar {
+        font-size: 56px;
+    }
+
+    .user-text-info h1 {
+        font-size: 32px;
+    }
+
+    .user-text-info h2 {
+        font-size: 18px;
+    }
+
+    .user-events {
+        padding: 0 24px;
+    }
+
+    .user-events h2 {
+        font-size: 28px;
+    }
+
+    .events-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -170,10 +170,24 @@ def login():
         return jsonify({'message': f'Server error: {str(e)}'}), 500
 
 @app.route('/api/profile', methods=['GET', 'OPTIONS'])
-@token_required
-def get_profile(current_user):
+def get_profile():
     if request.method == 'OPTIONS':
         return '', 200
+
+    # Get current user from token
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Token is missing'}), 401
+
+    try:
+        if token.startswith('Bearer '):
+            token = token[7:]
+        data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        current_user = mongo.db.users.find_one({'_id': ObjectId(data['user_id'])})
+        if not current_user:
+            return jsonify({'message': 'User not found'}), 401
+    except Exception as e:
+        return jsonify({'message': f'Token is invalid: {str(e)}'}), 401
 
     return jsonify({
         'user': {
@@ -184,12 +198,70 @@ def get_profile(current_user):
             'gender': current_user.get('gender'),
             'school': current_user.get('school'),
             'grade_level': current_user.get('grade_level'),
-            'interests': current_user.get('interests'),
+            'interests': current_user.get('interests', []),
             'bio': current_user.get('bio'),
             'profile_pic': current_user.get('profile_pic'),
             'created_at': current_user['created_at'].isoformat()
         }
     }), 200
+
+@app.route('/api/user/events', methods=['GET', 'OPTIONS'])
+def get_user_events():
+    if request.method == 'OPTIONS':
+        return '', 200
+
+    # Get current user from token
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Token is missing'}), 401
+
+    try:
+        if token.startswith('Bearer '):
+            token = token[7:]
+        data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        current_user = mongo.db.users.find_one({'_id': ObjectId(data['user_id'])})
+        if not current_user:
+            return jsonify({'message': 'User not found'}), 401
+    except Exception as e:
+        return jsonify({'message': f'Token is invalid: {str(e)}'}), 401
+
+    try:
+        user_id = str(current_user['_id'])
+        print(f"🔍 Fetching events for user_id: {user_id}")
+
+        # Find all events where this user is registered
+        # Assuming events have a 'registered_users' array field with user IDs
+        registered_events = mongo.db.events.find({
+            'registered_users': user_id
+        }).sort('date', 1)
+
+        events_list = []
+        for event in registered_events:
+            events_list.append({
+                'id': str(event['_id']),
+                'title': event.get('title'),
+                'description': event.get('description'),
+                'date': event.get('date'),
+                'time': event.get('time'),
+                'location': event.get('location'),
+                'category': event.get('category'),
+                'image': event.get('image'),
+                'host': event.get('host'),
+                'school': event.get('school')
+            })
+
+        print(f"✓ Found {len(events_list)} events for user")
+
+        return jsonify({
+            'events': events_list,
+            'count': len(events_list)
+        }), 200
+
+    except Exception as e:
+        print(f"❌ Error fetching user events: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'message': f'Server error: {str(e)}'}), 500
 
 @app.route('/api/events/categories', methods=['GET', 'OPTIONS'])
 def get_event_categories():
