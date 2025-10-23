@@ -167,7 +167,7 @@ const Signup = () => {
 
   const interestOptions = [
     'Sports', 'Music', 'Art', 'Technology', 'Science',
-    'Reading', 'Gaming', 'Cooking', 'Photography', 'Travel'
+    'Reading', 'Gaming', 'Cooking', 'Travel'
   ];
 
   return (
