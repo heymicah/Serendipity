@@ -1,0 +1,38 @@
+.home-container {
+  min-height: 100vh;
+  background-color: #fafafa;
+  font-family: 'Raleway', sans-serif;
+}
+
+/* Home Content */
+.home-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+/* Welcome Section */
+.welcome-section {
+  margin-bottom: 60px;
+  text-align: left;
+}
+
+.welcome-title {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 48px;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: 300;
+}
+
+.welcome-subtitle {
+  color: #999;
+  font-size: 16px;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+/* Remove old styles */
+.logout-button {
+  display: none;
+}

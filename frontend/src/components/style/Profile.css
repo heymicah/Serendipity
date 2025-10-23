@@ -1,0 +1,22 @@
+.profile-container {
+    font-family: 'Raleway', sans-serif;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5em;
+    margin-bottom: 100px;
+}
+
+.user-image {
+    flex: 1; 
+}
+.user-text-info {
+    flex: 1;
+}
+
+

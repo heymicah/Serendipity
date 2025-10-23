@@ -1,0 +1,112 @@
+
+.explore-container {
+  min-height: 100vh;
+  background: #fafafa;
+  font-family: 'Raleway', sans-serif;
+  /* padding: 140px 96px 60px 96px; */
+}
+
+
+/* ------------ */
+/* EXPLORE PAGE */
+/* ------------ */
+
+
+
+.explore-header {
+  text-align: center;
+  margin-bottom: 60px;
+  margin-top: 60px;
+}
+
+.explore-header h2 {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 48px;
+  font-weight: normal;
+  color: #333;
+  margin: 0;
+}
+
+.explore-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.explore-card {
+  position: relative;
+  background: white;
+  border-radius: 20px;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.explore-card.hovered {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+}
+
+.aura-background,
+.aura-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  transition: all 0.4s ease;
+}
+
+.aura-background {
+  width: 85%;
+  height: 85%;
+  filter: blur(30px);
+  opacity: 0.7;
+}
+
+.explore-card.hovered .aura-background {
+  opacity: 0.9;
+}
+
+.aura-inner {
+  width: 60%;
+  height: 60%;
+  filter: blur(20px);
+  opacity: 0.5;
+}
+
+.card-text {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  pointer-events: none;
+}
+
+.card-text h3 {
+  font-size: 24px;
+  font-weight: 400;
+  color: #333;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.card-text p {
+  font-size: 14px;
+  font-weight: 300;
+  color: #666;
+  margin: 8px 0 0 0;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.explore-card.hovered .card-text p {
+  opacity: 1;
+}

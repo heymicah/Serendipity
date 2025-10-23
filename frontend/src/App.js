@@ -4,6 +4,8 @@ import { AuthProvider } from './context/AuthContext';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import Home from './components/Home';
+import Explore from './components/Explore';
+import Profile from './components/Profile'
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -18,6 +20,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/explore"
+            element={
+              <ProtectedRoute>
+                <Explore />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             }
           />
