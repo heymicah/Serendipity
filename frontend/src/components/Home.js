@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './style/Home.css';
 import Navbar from './Navbar';
+import CreateEvent from './CreateEvent';
 
 const Home = () => {
   const { user, token } = useAuth();
@@ -11,6 +12,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [welcomeMessage, setWelcomeMessage] = useState('');
+  const [isCreateEventOpen, setIsCreateEventOpen] = useState(false);
 
   const welcomeMessages = [
     "Someone new is waiting to meet you today.",
@@ -80,9 +82,19 @@ const Home = () => {
     navigate(`/event/${eventId}`);
   };
 
+  const handleEventCreated = (newEvent) => {
+    // Refresh events list
+    setEvents(prev => [newEvent, ...prev]);
+  };
+
   return (
     <div className="home-container">
-      <Navbar />
+      <Navbar onCreateEvent={() => setIsCreateEventOpen(true)} />
+      <CreateEvent
+        isOpen={isCreateEventOpen}
+        onClose={() => setIsCreateEventOpen(false)}
+        onEventCreated={handleEventCreated}
+      />
 
       <div className="home-content">
         {/* Welcome Section */}
@@ -115,11 +127,9 @@ const Home = () => {
                     <div className="event-gradient-overlay"></div>
                     <div className="event-info">
                       <h4 className="event-title">{event.title}</h4>
-                      <p className="event-host">{event.host}</p>
                       <p className="event-datetime">
                         {formatDateTime(event.date, event.time)}
                       </p>
-                      <p className="event-attending">{event.attendees_count || 0} attending</p>
                     </div>
                     <div className="event-hover-overlay">
                       <button
