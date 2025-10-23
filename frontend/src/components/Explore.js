@@ -17,7 +17,7 @@ const ExploreDemo = () => {
     try {
       const token = localStorage.getItem('token');
 
-      const response = await fetch('http://127.0.0.1:5000/api/events/categories', {
+      const response = await fetch('http://127.0.0.1:5001/api/events/categories', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

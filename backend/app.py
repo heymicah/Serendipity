@@ -14,12 +14,15 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# CORS configuration
-CORS(app, 
-     origins=["http://localhost:3000", "http://127.0.0.1:3000"],
-     allow_headers=["Content-Type", "Authorization"],
-     supports_credentials=True,
-     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+# CORS configuration - Allow both localhost and 127.0.0.1
+CORS(app,
+     resources={r"/api/*": {
+         "origins": ["http://localhost:3000", "http://127.0.0.1:3000"],
+         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+         "allow_headers": ["Content-Type", "Authorization"],
+         "supports_credentials": True,
+         "expose_headers": ["Content-Type", "Authorization"]
+     }})
 
 # Configuration
 app.config['MONGO_URI'] = os.environ.get('MONGO_URI')
@@ -34,15 +37,6 @@ try:
 except Exception as e:
     print(f"✗ MongoDB connection failed: {e}")
     mongo = None
-
-# Add after_request handler for CORS headers
-@app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-    response.headers.add('Access-Control-Allow-Credentials', 'true')
-    return response
 
 # Token verification decorator
 def token_required(f):
@@ -401,5 +395,80 @@ def get_events_by_category(category_name):
         print(f"Error fetching events: {e}")
         return jsonify({'message': f'Server error: {str(e)}'}), 500
 
+@app.route('/api/events/all', methods=['GET', 'OPTIONS'])
+def get_all_events():
+    print(f"🔵 /api/events/all called with method: {request.method}")
+    if request.method == 'OPTIONS':
+        print("🔵 Returning OPTIONS response")
+        return '', 200
+
+    # Get current user from token
+    token = request.headers.get('Authorization')
+    print(f"🔵 Token present: {bool(token)}")
+    if not token:
+        return jsonify({'message': 'Token is missing'}), 401
+
+    try:
+        if token.startswith('Bearer '):
+            token = token[7:]
+        data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        current_user = mongo.db.users.find_one({'_id': ObjectId(data['user_id'])})
+        if not current_user:
+            return jsonify({'message': 'User not found'}), 401
+    except Exception as e:
+        return jsonify({'message': f'Token is invalid: {str(e)}'}), 401
+
+    try:
+        # Get query parameters
+        interests_only = request.args.get('interests_only', 'false').lower() == 'true'
+
+        # Get user's school to filter events
+        user_school = current_user.get('school')
+
+        # Build query
+        query = {'school': user_school}
+
+        # Add interest filtering if requested
+        if interests_only:
+            user_interests = current_user.get('interests', [])
+            print(f"User interests: {user_interests}")
+            if user_interests:
+                query['category'] = {'$in': user_interests}
+            print(f"Query: {query}")
+
+        # Find all events at the user's school, sorted by _id descending (most recent first)
+        # Using _id for sorting since ObjectId contains timestamp
+        events = mongo.db.events.find(query).sort('_id', -1)
+        print(f"Found {mongo.db.events.count_documents(query)} events")
+
+        # Convert to list and format
+        events_list = []
+        for event in events:
+            # Check if user is registered
+            registered_users = event.get('registered_users', [])
+            user_registered = str(current_user['_id']) in [str(uid) for uid in registered_users]
+
+            events_list.append({
+                'id': str(event['_id']),
+                'title': event.get('title'),
+                'description': event.get('description'),
+                'date': str(event.get('date', '')),
+                'time': event.get('time'),
+                'location': event.get('location'),
+                'category': event.get('category'),
+                'image': event.get('image'),
+                'host': event.get('host'),
+                'school': event.get('school'),
+                'organizer': event.get('host', 'Unknown'),
+                'attendees_count': len(registered_users),
+                'user_rsvp': user_registered
+            })
+
+        return jsonify({'events': events_list}), 200
+
+    except Exception as e:
+        print(f"Error fetching all events: {e}")
+        return jsonify({'message': f'Server error: {str(e)}'}), 500
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5001)
