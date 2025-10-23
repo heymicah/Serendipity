@@ -181,7 +181,7 @@ const Signup = () => {
       </div>
 
       <div className="auth-card">
-        <h1>{step === 1 ? "Welcome, first things first..." : "Sign Up"}</h1>
+        <h1>{step === 1 ? "Welcome! First things first..." : "Sign Up"}</h1>
         {step === 1 && <p style={{ fontSize: '18px', fontWeight: 'normal', marginTop: '-15px', textAlign: 'center', fontStyle: 'italic' }}>Tell us about yourself</p>}
 
         {error && <div className="error-message">{error}</div>}
