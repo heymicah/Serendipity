@@ -1,48 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './style/Explore.css';
 import Navbar from './Navbar';
 
 const ExploreDemo = () => {
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  const categories = [
-    { 
-      name: 'Sports', events: 24,
-      gradient: 'radial-gradient(circle, #ffecd2 0%, #fcb69f 50%, #fdcb6e 100%)'
-    },
-    { 
-      name: 'Music', events: 18,
-      gradient: 'radial-gradient(circle at 40% 30%, rgba(240, 147, 251, 0.9) 0%, rgba(245, 87, 108, 0.7) 50%, rgba(240, 147, 251, 0.4) 100%)'
-    },
-    { 
-      name: 'Art', events: 31,
-      gradient: 'radial-gradient(circle at 50% 50%, rgba(79, 172, 254, 0.9) 0%, rgba(0, 242, 254, 0.7) 50%, rgba(79, 172, 254, 0.4) 100%)'
-    },
-    { 
-      name: 'Technology', events: 15,
-      gradient: 'radial-gradient(circle at 35% 45%, rgba(67, 233, 123, 0.9) 0%, rgba(56, 249, 215, 0.7) 50%, rgba(67, 233, 123, 0.4) 100%)'
-    },
-    { 
-      name: 'Science', events: 12,
-      gradient: 'radial-gradient(circle at 45% 35%, rgba(250, 112, 154, 0.9) 0%, rgba(254, 225, 64, 0.7) 50%, rgba(250, 112, 154, 0.4) 100%)'
-    },
-    { 
-      name: 'Reading', events: 27,
-      gradient: 'radial-gradient(circle, #d4b5f7 0%, #b3e5fc 100%)'
-    },
-    { 
-      name: 'Gaming', events: 22,
-      gradient: 'radial-gradient(circle, #eb3349 0%, #f093fb 50%, #764ba2 100%)'
-    },
-    { 
-      name: 'Cooking', events: 19,
-      gradient: 'radial-gradient(circle at 40% 40%, rgba(255, 154, 86, 0.9) 0%, rgba(255, 106, 136, 0.7) 50%, rgba(255, 154, 86, 0.4) 100%)'
-    },
-    { 
-      name: 'Travel', events: 33,
-      gradient: 'radial-gradient(circle, #4facfe 0%, #3cc9c9 50%, #43e97b 100%)'
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const token = localStorage.getItem('token');
+
+      const response = await fetch('http://127.0.0.1:5000/api/events/categories', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch categories');
+      }
+
+      const data = await response.json();
+      setCategories(data.categories);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      setLoading(false);
     }
-  ];
+  };
+
+  const handleCategoryClick = (categoryName) => {
+    navigate(`/explore/${categoryName}`);
+  };
+
+  if (loading) {
+    return (
+      <div className="explore-container">
+        <Navbar />
+        <div className="explore-header">
+          <h2>Loading categories...</h2>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="explore-container">
@@ -61,13 +69,14 @@ const ExploreDemo = () => {
             className={`explore-card ${hoveredCard === index ? 'hovered' : ''}`}
             onMouseEnter={() => setHoveredCard(index)}
             onMouseLeave={() => setHoveredCard(null)}
+            onClick={() => handleCategoryClick(category.name)}
           >
-            <div 
-              className="aura-background" 
+            <div
+              className="aura-background"
               style={{ background: category.gradient }}
             />
-            <div 
-              className="aura-inner" 
+            <div
+              className="aura-inner"
               style={{ background: category.gradient }}
             />
             <div className="card-text">

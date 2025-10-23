@@ -5,6 +5,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import Home from './components/Home';
 import Explore from './components/Explore';
+import EventGrid from './components/EventGrid';
 import Profile from './components/Profile'
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -28,6 +29,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Explore />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/explore/:category"
+            element={
+              <ProtectedRoute>
+                <EventGrid />
               </ProtectedRoute>
             }
           />
