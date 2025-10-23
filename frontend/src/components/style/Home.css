@@ -123,6 +123,7 @@
   align-items: center;
   justify-content: center;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.3s ease;
 }
 
@@ -133,6 +134,7 @@
 
 .event-tile:hover .event-hover-overlay {
   opacity: 1;
+  pointer-events: auto;
 }
 
 /* View Event Button */
@@ -169,6 +171,7 @@
   z-index: 1;
   color: white;
   transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .event-tile:hover .event-info {
