@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import './style/navstyle.css';
 
-const Navbar = () => {
+const Navbar = ({ onCreateEvent }) => {
     return (
       <nav className="navbar">
         <div className="navbar-content">
@@ -14,6 +14,11 @@ const Navbar = () => {
           >
             HOME
           </NavLink>
+          {onCreateEvent && (
+            <button className="nav-link create-event-btn" onClick={onCreateEvent}>
+              CREATE EVENT
+            </button>
+          )}
           <NavLink
             to="/explore"
             className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}

@@ -45,3 +45,15 @@
   font-weight: 500;
   border-bottom: 2px solid #007bff;
 }
+
+.create-event-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Raleway', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+.create-event-btn:hover {
+  color: #333;
+}

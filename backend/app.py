@@ -436,6 +436,93 @@ def get_events_by_category(category_name):
         print(f"Error fetching events: {e}")
         return jsonify({'message': f'Server error: {str(e)}'}), 500
 
+@app.route('/api/events/create', methods=['POST', 'OPTIONS'])
+def create_event():
+    if request.method == 'OPTIONS':
+        return '', 200
+
+    # Get current user from token
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Token is missing'}), 401
+
+    try:
+        if token.startswith('Bearer '):
+            token = token[7:]
+        data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        current_user = mongo.db.users.find_one({'_id': ObjectId(data['user_id'])})
+        if not current_user:
+            return jsonify({'message': 'User not found'}), 401
+    except Exception as e:
+        return jsonify({'message': f'Token is invalid: {str(e)}'}), 401
+
+    try:
+        event_data = request.get_json()
+
+        # Validation
+        required_fields = ['title', 'description', 'category', 'date', 'time', 'location']
+        missing_fields = [field for field in required_fields if not event_data.get(field)]
+
+        if missing_fields:
+            return jsonify({
+                'message': f'Missing required fields: {", ".join(missing_fields)}'
+            }), 400
+
+        # Get host info from current user
+        host_name = f"{current_user.get('first_name', '')} {current_user.get('last_name', '')}".strip()
+        if not host_name:
+            host_name = current_user.get('email', 'Unknown Host')
+
+        # Create event document
+        new_event = {
+            'title': event_data['title'],
+            'description': event_data['description'],
+            'category': event_data['category'],
+            'date': event_data['date'],
+            'time': event_data['time'],
+            'start_time': event_data.get('start_time'),
+            'end_time': event_data.get('end_time'),
+            'location': event_data['location'],
+            'school_years': event_data.get('school_years', 'All'),
+            'genders': event_data.get('genders', 'All'),
+            'image': event_data['image'],
+            'host': host_name,
+            'host_id': str(current_user['_id']),
+            'school': current_user.get('school'),
+            'registered_users': [],
+            'created_at': datetime.utcnow()
+        }
+
+        result = mongo.db.events.insert_one(new_event)
+
+        # Return created event
+        created_event = {
+            'id': str(result.inserted_id),
+            'title': new_event['title'],
+            'description': new_event['description'],
+            'category': new_event['category'],
+            'date': str(new_event['date']),
+            'time': new_event['time'],
+            'location': new_event['location'],
+            'image': new_event['image'],
+            'host': new_event['host'],
+            'host_id': new_event['host_id'],
+            'school': new_event['school'],
+            'attendees_count': 0,
+            'user_rsvp': False
+        }
+
+        return jsonify({
+            'message': 'Event created successfully',
+            'event': created_event
+        }), 201
+
+    except Exception as e:
+        print(f"Error creating event: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'message': f'Server error: {str(e)}'}), 500
+
 @app.route('/api/events/<event_id>', methods=['GET', 'OPTIONS'])
 def get_event_by_id(event_id):
     if request.method == 'OPTIONS':
