@@ -10,6 +10,38 @@ const Home = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [welcomeMessage, setWelcomeMessage] = useState('');
+
+  const welcomeMessages = [
+    "Someone new is waiting to meet you today.",
+    "A new connection starts now.",
+    "Who will you meet today?",
+    "Your next friend might be one tap away.",
+    "It's a great day to meet someone new."
+  ];
+
+  // Set random welcome message on component mount
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * welcomeMessages.length);
+    setWelcomeMessage(welcomeMessages[randomIndex]);
+  }, []);
+
+  const formatDateTime = (dateStr, timeStr) => {
+    try {
+      const date = new Date(dateStr);
+      const month = date.toLocaleDateString('en-US', { month: 'long' });
+      const day = date.getDate();
+
+      // If time is provided, format it
+      if (timeStr) {
+        return `${month} ${day} • ${timeStr}`;
+      }
+
+      return `${month} ${day}`;
+    } catch (e) {
+      return dateStr;
+    }
+  };
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -44,8 +76,7 @@ const Home = () => {
   }, [token]);
 
   const handleViewEvent = (eventId) => {
-    // TODO: Navigate to event detail page
-    console.log('View event:', eventId);
+    navigate(`/event/${eventId}`);
   };
 
   return (
@@ -55,8 +86,7 @@ const Home = () => {
       <div className="home-content">
         {/* Welcome Section */}
         <div className="welcome-section">
-          <h2 className="welcome-title">Welcome, {user?.first_name || 'User'}</h2>
-          <p className="welcome-subtitle">DISCOVER • CONNECT • EXPERIENCE</p>
+          <h2 className="welcome-title">{welcomeMessage}</h2>
         </div>
 
         {/* Featured Events Section */}
@@ -81,7 +111,16 @@ const Home = () => {
                       alt={event.title}
                       className="event-image"
                     />
-                    <div className="event-overlay">
+                    <div className="event-gradient-overlay"></div>
+                    <div className="event-info">
+                      <h4 className="event-title">{event.title}</h4>
+                      <p className="event-host">{event.host}</p>
+                      <p className="event-datetime">
+                        {formatDateTime(event.date, event.time)}
+                      </p>
+                      <p className="event-attending">{event.attendees_count || 0} attending</p>
+                    </div>
+                    <div className="event-hover-overlay">
                       <button
                         className="view-event-button"
                         onClick={() => handleViewEvent(event.id)}
@@ -89,11 +128,6 @@ const Home = () => {
                         View Event
                       </button>
                     </div>
-                  </div>
-                  <div className="event-info">
-                    <h4 className="event-title">{event.title}</h4>
-                    <p className="event-host">{event.host}</p>
-                    <p className="event-attending">{event.attending || '5 attending'} • {event.date}</p>
                   </div>
                 </div>
               ))}

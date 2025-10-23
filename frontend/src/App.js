@@ -6,6 +6,7 @@ import Signup from './components/Signup';
 import Home from './components/Home';
 import Explore from './components/Explore';
 import EventGrid from './components/EventGrid';
+import EventDetail from './components/EventDetail';
 import Profile from './components/Profile'
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -37,6 +38,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <EventGrid />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/event/:eventId"
+            element={
+              <ProtectedRoute>
+                <EventDetail />
               </ProtectedRoute>
             }
           />

@@ -14,12 +14,12 @@
 /* Welcome Section */
 .welcome-section {
   margin-bottom: 40px;
-  text-align: left;
+  text-align: center;
 }
 
 .welcome-title {
   font-family: 'Libre Baskerville', serif;
-  font-size: 48px;
+  font-size: 36px;
   color: #333;
   margin-bottom: 10px;
   font-weight: 300;
@@ -69,7 +69,6 @@
 
 /* Event Tile */
 .event-tile {
-  background: white;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -85,7 +84,7 @@
 .event-image-container {
   position: relative;
   width: 100%;
-  height: 280px;
+  height: 320px;
   overflow: hidden;
 }
 
@@ -96,7 +95,24 @@
   transition: filter 0.3s ease, transform 0.3s ease;
 }
 
-.event-overlay {
+/* Gradient overlay for text readability */
+.event-gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.1) 40%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+  pointer-events: none;
+}
+
+/* Hover overlay */
+.event-hover-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -115,7 +131,7 @@
   transform: scale(1.05);
 }
 
-.event-tile:hover .event-overlay {
+.event-tile:hover .event-hover-overlay {
   opacity: 1;
 }
 
@@ -143,30 +159,53 @@
   transform: scale(0.98);
 }
 
-/* Event Info */
+/* Event Info - Overlaid on image */
 .event-info {
-  padding: 20px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px;
+  z-index: 1;
+  color: white;
+  transition: opacity 0.3s ease;
 }
 
-.event-title {
-  font-family: 'Raleway', sans-serif;
-  font-size: 20px;
+.event-tile:hover .event-info {
+  opacity: 0;
+}
+
+.event-info .event-title {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 24px;
   font-weight: 700;
-  color: #333;
+  color: white !important;
   margin: 0 0 8px 0;
-  line-height: 1.3;
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.event-host {
-  font-size: 14px;
-  color: #666;
+.event-info .event-host {
+  font-size: 15px;
+  color: white !important;
   margin: 0 0 6px 0;
+  padding: 0;
+  border: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.event-attending {
-  font-size: 13px;
-  color: #999;
+.event-info .event-datetime {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9) !important;
+  margin: 0 0 4px 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.event-info .event-attending {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85) !important;
   margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Responsive Design */
