@@ -76,6 +76,7 @@ const Home = () => {
   }, [token]);
 
   const handleViewEvent = (eventId) => {
+    console.log('View event clicked, eventId:', eventId);
     navigate(`/event/${eventId}`);
   };
 
