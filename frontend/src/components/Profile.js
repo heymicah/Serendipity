@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import './style/Profile.css'
 
 const Profile = () => {
+    const navigate = useNavigate();
     const [user, setUser] = useState(null);
-    const [events, setEvents] = useState([]);
+    const [attendingEvents, setAttendingEvents] = useState([]);
+    const [hostingEvents, setHostingEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         fetchUserProfile();
         fetchUserEvents();
+        fetchHostingEvents();
     }, []);
 
     const fetchUserProfile = async () => {
@@ -49,7 +53,28 @@ const Profile = () => {
             }
 
             const data = await response.json();
-            setEvents(data.events);
+            setAttendingEvents(data.events);
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
+    const fetchHostingEvents = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://127.0.0.1:5001/api/user/hosting', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch hosting events');
+            }
+
+            const data = await response.json();
+            setHostingEvents(data.events);
             setLoading(false);
         } catch (err) {
             setError(err.message);
@@ -123,17 +148,77 @@ const Profile = () => {
                 </div>
             </div>
 
+            {/* Events I'm Hosting */}
             <div className="user-events">
-                <h2>My Events</h2>
-                {events.length === 0 ? (
+                <h2>Events I'm Hosting</h2>
+                {hostingEvents.length === 0 ? (
+                    <div className="no-events-message">
+                        <p>You haven't created any events yet.</p>
+                        <p>Click "Create Event" in the navbar to get started!</p>
+                    </div>
+                ) : (
+                    <div className="events-grid">
+                        {hostingEvents.map((event) => (
+                            <div
+                                key={event.id}
+                                className="profile-event-card"
+                                onClick={() => navigate(`/event/${event.id}`)}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                {event.image && (
+                                    <div className="profile-event-image">
+                                        <img src={event.image} alt={event.title} />
+                                    </div>
+                                )}
+                                <div className="profile-event-content">
+                                    <h3>{event.title}</h3>
+                                    <div className="event-category-badge">{event.category}</div>
+                                    {event.date && (
+                                        <div className="event-detail">
+                                            <span className="detail-icon">📅</span>
+                                            <span>{new Date(event.date).toLocaleDateString()}</span>
+                                        </div>
+                                    )}
+                                    {event.time && (
+                                        <div className="event-detail">
+                                            <span className="detail-icon">🕐</span>
+                                            <span>{event.time}</span>
+                                        </div>
+                                    )}
+                                    {event.location && (
+                                        <div className="event-detail">
+                                            <span className="detail-icon">📍</span>
+                                            <span>{event.location}</span>
+                                        </div>
+                                    )}
+                                    <div className="event-detail">
+                                        <span className="detail-icon">👥</span>
+                                        <span>{event.attendees_count || 0} attending</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* Events I'm Attending */}
+            <div className="user-events">
+                <h2>Events I'm Attending</h2>
+                {attendingEvents.length === 0 ? (
                     <div className="no-events-message">
                         <p>You haven't registered for any events yet.</p>
                         <p>Explore events and sign up to see them here!</p>
                     </div>
                 ) : (
                     <div className="events-grid">
-                        {events.map((event) => (
-                            <div key={event.id} className="profile-event-card">
+                        {attendingEvents.map((event) => (
+                            <div
+                                key={event.id}
+                                className="profile-event-card"
+                                onClick={() => navigate(`/event/${event.id}`)}
+                                style={{ cursor: 'pointer' }}
+                            >
                                 {event.image && (
                                     <div className="profile-event-image">
                                         <img src={event.image} alt={event.title} />
