@@ -6,12 +6,13 @@ import Navbar from './Navbar';
 
 const EventDetail = () => {
   const { eventId } = useParams();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const [hostProfile, setHostProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isRsvping, setIsRsvping] = useState(false);
 
   useEffect(() => {
     const fetchEventDetail = async () => {
@@ -75,8 +76,47 @@ const EventDetail = () => {
   };
 
   const handleSignUp = async () => {
-    // TODO: Implement sign up functionality
-    console.log('Sign up for event:', eventId);
+    if (isRsvping) return;
+
+    // Don't allow hosts to change their RSVP
+    if (isUserHost()) return;
+
+    setIsRsvping(true);
+    try {
+      const method = event.user_rsvp ? 'DELETE' : 'POST';
+      const response = await fetch(`http://localhost:5001/api/events/${eventId}/rsvp`, {
+        method: method,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update RSVP');
+      }
+
+      const data = await response.json();
+
+      // Update event state
+      setEvent(prev => ({
+        ...prev,
+        user_rsvp: !prev.user_rsvp,
+        attendees_count: data.attendees_count
+      }));
+
+    } catch (err) {
+      console.error('Error updating RSVP:', err);
+      alert(err.message || 'Failed to update RSVP. Please try again.');
+    } finally {
+      setIsRsvping(false);
+    }
+  };
+
+  const isUserHost = () => {
+    if (!event || !user) return false;
+    return event.host_id === user.id;
   };
 
   const formatDate = (dateStr) => {
@@ -183,8 +223,12 @@ const EventDetail = () => {
 
             {/* Sign Up Button and Attendees */}
             <div className="event-detail-actions">
-              <button className="sign-up-button" onClick={handleSignUp}>
-                Sign Up
+              <button
+                className={`sign-up-button ${isUserHost() ? 'host-button' : event.user_rsvp ? 'rsvp-active' : ''}`}
+                onClick={handleSignUp}
+                disabled={isRsvping || isUserHost()}
+              >
+                {isUserHost() ? 'Hosting' : (isRsvping ? 'Loading...' : (event.user_rsvp ? 'Cancel RSVP' : 'Sign Up'))}
               </button>
               <p className="attendees-count">{event.attendees_count || 0} Attending</p>
             </div>

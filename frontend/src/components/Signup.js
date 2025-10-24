@@ -279,8 +279,8 @@ const Signup = () => {
                   required
                 >
                   <option value="">Select...</option>
-                  <option value="uf">University of Florida</option>
-                  <option value="fsu">Florida State University</option>
+                  <option value="University of Florida">University of Florida</option>
+                  <option value="Florida State University">Florida State University</option>
                 </select>
               </div>
 
@@ -294,10 +294,11 @@ const Signup = () => {
                   required
                 >
                   <option value="">Select...</option>
-                  <option value="College Freshman">College Freshman</option>
-                  <option value="College Sophomore">College Sophomore</option>
-                  <option value="College Junior">College Junior</option>
-                  <option value="College Senior">College Senior</option>
+                  <option value="Freshman">Freshman</option>
+                  <option value="Sophomore">Sophomore</option>
+                  <option value="Junior">Junior</option>
+                  <option value="Senior">Senior</option>
+                  <option value="Graduate">Graduate</option>
                 </select>
               </div>
             </>

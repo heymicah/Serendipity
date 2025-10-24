@@ -240,6 +240,64 @@ def get_user_by_id(user_id):
         print(f"Error fetching user: {e}")
         return jsonify({'message': f'Server error: {str(e)}'}), 500
 
+@app.route('/api/user/hosting', methods=['GET', 'OPTIONS'])
+def get_user_hosting():
+    if request.method == 'OPTIONS':
+        return '', 200
+
+    # Get current user from token
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Token is missing'}), 401
+
+    try:
+        if token.startswith('Bearer '):
+            token = token[7:]
+        data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        current_user = mongo.db.users.find_one({'_id': ObjectId(data['user_id'])})
+        if not current_user:
+            return jsonify({'message': 'User not found'}), 401
+    except Exception as e:
+        return jsonify({'message': f'Token is invalid: {str(e)}'}), 401
+
+    try:
+        user_id = str(current_user['_id'])
+        print(f"🔍 Fetching hosted events for user_id: {user_id}")
+
+        # Find all events where this user is the host
+        hosted_events = mongo.db.events.find({
+            'host_id': user_id
+        }).sort('date', 1)
+
+        events_list = []
+        for event in hosted_events:
+            events_list.append({
+                'id': str(event['_id']),
+                'title': event.get('title'),
+                'description': event.get('description'),
+                'date': event.get('date'),
+                'time': event.get('time'),
+                'location': event.get('location'),
+                'category': event.get('category'),
+                'image': event.get('image'),
+                'host': event.get('host'),
+                'school': event.get('school'),
+                'attendees_count': len(event.get('registered_users', []))
+            })
+
+        print(f"✓ Found {len(events_list)} hosted events for user")
+
+        return jsonify({
+            'events': events_list,
+            'count': len(events_list)
+        }), 200
+
+    except Exception as e:
+        print(f"❌ Error fetching hosted events: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'message': f'Server error: {str(e)}'}), 500
+
 @app.route('/api/user/events', methods=['GET', 'OPTIONS'])
 def get_user_events():
     if request.method == 'OPTIONS':
@@ -262,12 +320,12 @@ def get_user_events():
 
     try:
         user_id = str(current_user['_id'])
-        print(f"🔍 Fetching events for user_id: {user_id}")
+        print(f"🔍 Fetching attending events for user_id: {user_id}")
 
-        # Find all events where this user is registered
-        # Assuming events have a 'registered_users' array field with user IDs
+        # Find all events where this user is registered BUT NOT the host
         registered_events = mongo.db.events.find({
-            'registered_users': user_id
+            'registered_users': user_id,
+            'host_id': {'$ne': user_id}  # Exclude events where user is the host
         }).sort('date', 1)
 
         events_list = []
@@ -285,7 +343,7 @@ def get_user_events():
                 'school': event.get('school')
             })
 
-        print(f"✓ Found {len(events_list)} events for user")
+        print(f"✓ Found {len(events_list)} attending events for user")
 
         return jsonify({
             'events': events_list,
@@ -473,7 +531,8 @@ def create_event():
         if not host_name:
             host_name = current_user.get('email', 'Unknown Host')
 
-        # Create event document
+        # Create event document - auto-RSVP the creator
+        user_id = str(current_user['_id'])
         new_event = {
             'title': event_data['title'],
             'description': event_data['description'],
@@ -487,9 +546,9 @@ def create_event():
             'genders': event_data.get('genders', 'All'),
             'image': event_data['image'],
             'host': host_name,
-            'host_id': str(current_user['_id']),
+            'host_id': user_id,
             'school': current_user.get('school'),
-            'registered_users': [],
+            'registered_users': [user_id],  # Auto-RSVP creator
             'created_at': datetime.utcnow()
         }
 
@@ -519,6 +578,74 @@ def create_event():
 
     except Exception as e:
         print(f"Error creating event: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'message': f'Server error: {str(e)}'}), 500
+
+@app.route('/api/events/<event_id>/rsvp', methods=['POST', 'DELETE', 'OPTIONS'])
+def rsvp_event(event_id):
+    if request.method == 'OPTIONS':
+        return '', 200
+
+    # Get current user from token
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Token is missing'}), 401
+
+    try:
+        if token.startswith('Bearer '):
+            token = token[7:]
+        data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        current_user = mongo.db.users.find_one({'_id': ObjectId(data['user_id'])})
+        if not current_user:
+            return jsonify({'message': 'User not found'}), 401
+    except Exception as e:
+        return jsonify({'message': f'Token is invalid: {str(e)}'}), 401
+
+    try:
+        user_id = str(current_user['_id'])
+
+        # Find the event
+        event = mongo.db.events.find_one({'_id': ObjectId(event_id)})
+        if not event:
+            return jsonify({'message': 'Event not found'}), 404
+
+        registered_users = event.get('registered_users', [])
+
+        if request.method == 'POST':
+            # RSVP to event
+            if user_id in registered_users:
+                return jsonify({'message': 'Already registered for this event'}), 400
+
+            # Add user to event's registered_users
+            mongo.db.events.update_one(
+                {'_id': ObjectId(event_id)},
+                {'$push': {'registered_users': user_id}}
+            )
+
+            return jsonify({
+                'message': 'Successfully registered for event',
+                'attendees_count': len(registered_users) + 1
+            }), 200
+
+        elif request.method == 'DELETE':
+            # Cancel RSVP
+            if user_id not in registered_users:
+                return jsonify({'message': 'Not registered for this event'}), 400
+
+            # Remove user from event's registered_users
+            mongo.db.events.update_one(
+                {'_id': ObjectId(event_id)},
+                {'$pull': {'registered_users': user_id}}
+            )
+
+            return jsonify({
+                'message': 'Successfully cancelled registration',
+                'attendees_count': len(registered_users) - 1
+            }), 200
+
+    except Exception as e:
+        print(f"Error processing RSVP: {e}")
         import traceback
         traceback.print_exc()
         return jsonify({'message': f'Server error: {str(e)}'}), 500
@@ -607,9 +734,13 @@ def get_all_events():
 
         # Get user's school to filter events
         user_school = current_user.get('school')
+        user_id = str(current_user['_id'])
 
-        # Build query
-        query = {'school': user_school}
+        # Build query - exclude events the user is hosting
+        query = {
+            'school': user_school,
+            'host_id': {'$ne': user_id}  # Exclude events where user is the host
+        }
 
         # Add interest filtering if requested
         if interests_only:

@@ -208,6 +208,29 @@
   transform: scale(0.98);
 }
 
+.sign-up-button.rsvp-active {
+  background-color: #666;
+}
+
+.sign-up-button.rsvp-active:hover {
+  background-color: #555;
+}
+
+.sign-up-button.host-button {
+  background-color: #999;
+  cursor: not-allowed;
+}
+
+.sign-up-button.host-button:hover {
+  background-color: #999;
+  transform: none;
+}
+
+.sign-up-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .attendees-count {
   font-size: 15px;
   color: #666;
