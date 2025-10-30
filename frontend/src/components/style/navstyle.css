@@ -43,15 +43,19 @@
 .nav-link.active {
   color: #333;
   font-weight: 500;
-  border-bottom: 2px solid #007bff;
+  border-bottom: 2px solid rgb(226, 123, 26);
 }
 
 .create-event-btn {
-  background: none;
+  background: rgb(255, 123, 0);
   border: none;
+  border-radius: 25px;
+  padding: 8px;
   cursor: pointer;
   font-family: 'Raleway', sans-serif;
+  font-weight: bold;
   letter-spacing: 0.5px;
+  color: white;
 }
 
 .create-event-btn:hover {

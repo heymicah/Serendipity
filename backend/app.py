@@ -784,5 +784,58 @@ def get_all_events():
         print(f"Error fetching all events: {e}")
         return jsonify({'message': f'Server error: {str(e)}'}), 500
 
+@app.route('/api/profile/bio', methods=['PUT', 'OPTIONS'])
+def update_bio():
+    if request.method == 'OPTIONS':
+        return '', 200
+
+    # Get current user from token
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Token is missing'}), 401
+
+    try:
+        if token.startswith('Bearer '):
+            token = token[7:]
+        data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        current_user = mongo.db.users.find_one({'_id': ObjectId(data['user_id'])})
+        if not current_user:
+            return jsonify({'message': 'User not found'}), 401
+    except Exception as e:
+        return jsonify({'message': f'Token is invalid: {str(e)}'}), 401
+
+    try:
+        request_data = request.get_json()
+        bio = request_data.get('bio', '').strip()
+        
+        # Update the user's bio in MongoDB
+        mongo.db.users.update_one(
+            {'_id': current_user['_id']},
+            {'$set': {'bio': bio}}
+        )
+        
+        # Fetch updated user data
+        updated_user = mongo.db.users.find_one({'_id': current_user['_id']})
+        
+        return jsonify({
+            'message': 'Bio updated successfully',
+            'user': {
+                'id': str(updated_user['_id']),
+                'first_name': updated_user['first_name'],
+                'last_name': updated_user['last_name'],
+                'email': updated_user['email'],
+                'gender': updated_user.get('gender'),
+                'school': updated_user.get('school'),
+                'grade_level': updated_user.get('grade_level'),
+                'interests': updated_user.get('interests', []),
+                'bio': updated_user.get('bio'),
+                'profile_pic': updated_user.get('profile_pic')
+            }
+        }), 200
+            
+    except Exception as e:
+        print(f"Error updating bio: {e}")
+        return jsonify({'message': f'Server error: {str(e)}'}), 500
+
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

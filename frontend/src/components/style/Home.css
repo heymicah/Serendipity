@@ -139,7 +139,7 @@
 
 /* View Event Button */
 .view-event-button {
-  background-color: #e8766d;
+  background-color: rgb(226, 123, 26);
   color: white;
   border: none;
   padding: 12px 28px;
@@ -153,7 +153,7 @@
 }
 
 .view-event-button:hover {
-  background-color: #d66760;
+  background-color: rgb(226, 123, 26);
   transform: scale(1.05);
 }
 

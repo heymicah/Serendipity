@@ -95,23 +95,32 @@ const CreateEvent = ({ isOpen, onClose, onEventCreated }) => {
   };
 
   const validateImageUrl = (url, category) => {
+    // // If no URL provided, use stock image
+    // if (!url || url.trim() === '') {
+    //   const stockImages = CATEGORY_STOCK_IMAGES[category] || CATEGORY_STOCK_IMAGES['Sports'];
+    //   return stockImages[Math.floor(Math.random() * stockImages.length)];
+    // }
+
+    // // Basic URL format validation
+    // try {
+    //   new URL(url);
+    //   // If it's a valid URL format, use it
+    //   return url;
+    // } catch (error) {
+    //   // If URL format is invalid, use stock image
+    //   console.log('Invalid URL format, using stock image');
+    //   const stockImages = CATEGORY_STOCK_IMAGES[category] || CATEGORY_STOCK_IMAGES['Sports'];
+    //   return stockImages[Math.floor(Math.random() * stockImages.length)];
+    // }
     // If no URL provided, use stock image
     if (!url || url.trim() === '') {
       const stockImages = CATEGORY_STOCK_IMAGES[category] || CATEGORY_STOCK_IMAGES['Sports'];
       return stockImages[Math.floor(Math.random() * stockImages.length)];
     }
 
-    // Basic URL format validation
-    try {
-      new URL(url);
-      // If it's a valid URL format, use it
-      return url;
-    } catch (error) {
-      // If URL format is invalid, use stock image
-      console.log('Invalid URL format, using stock image');
-      const stockImages = CATEGORY_STOCK_IMAGES[category] || CATEGORY_STOCK_IMAGES['Sports'];
-      return stockImages[Math.floor(Math.random() * stockImages.length)];
-    }
+    // If URL is provided, use it directly
+    // Note: We're trusting the user's input here. The img tag will handle invalid URLs gracefully
+    return url.trim();
   };
 
   const validateForm = () => {
@@ -341,7 +350,7 @@ const CreateEvent = ({ isOpen, onClose, onEventCreated }) => {
             <label>School Years Allowed *</label>
             <div className="checkbox-group">
               {schoolYearOptions.map(year => (
-                <label key={year} className="checkbox-label">
+                <label key={ year} className="checkbox-label">
                   <input
                     type="checkbox"
                     checked={formData.schoolYears.includes(year)}

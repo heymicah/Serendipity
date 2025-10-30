@@ -10,6 +10,11 @@ const Profile = () => {
     const [hostingEvents, setHostingEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    
+    // Edit mode states
+    const [isEditingBio, setIsEditingBio] = useState(false);
+    const [editedBio, setEditedBio] = useState('');
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         fetchUserProfile();
@@ -33,6 +38,7 @@ const Profile = () => {
 
             const data = await response.json();
             setUser(data.user);
+            setEditedBio(data.user.bio || '');
         } catch (err) {
             setError(err.message);
         }
@@ -80,6 +86,38 @@ const Profile = () => {
             setError(err.message);
             setLoading(false);
         }
+    };
+
+    const handleSaveBio = async () => {
+        setSaving(true);
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://127.0.0.1:5001/api/profile/bio', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ bio: editedBio })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update bio');
+            }
+
+            const data = await response.json();
+            setUser(data.user);
+            setIsEditingBio(false);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleCancelBio = () => {
+        setEditedBio(user.bio || '');
+        setIsEditingBio(false);
     };
 
     const getGradYear = (gradeLevel) => {
@@ -130,11 +168,49 @@ const Profile = () => {
                 <div className="user-text-info">
                     <h1>{user.first_name} {user.last_name}</h1>
                     <h2>{user.school}, {getGradYear(user.grade_level)}</h2>
-                    {user.bio ? (
-                        <p className="user-bio">{user.bio}</p>
-                    ) : (
-                        <p className="user-bio placeholder">No bio added yet. Share something about yourself!</p>
-                    )}
+                    
+                    {/* Editable Bio Section */}
+                    <div className="bio-section">
+                        {isEditingBio ? (
+                            <div className="edit-bio">
+                                <textarea
+                                    value={editedBio}
+                                    onChange={(e) => setEditedBio(e.target.value)}
+                                    placeholder="Tell us about yourself..."
+                                    rows={4}
+                                    className="bio-textarea"
+                                />
+                                <div className="edit-buttons">
+                                    <button 
+                                        onClick={handleSaveBio} 
+                                        className="save-btn"
+                                        disabled={saving}
+                                    >
+                                        {saving ? 'Saving...' : 'Save'}
+                                    </button>
+                                    <button 
+                                        onClick={handleCancelBio} 
+                                        className="cancel-btn"
+                                        disabled={saving}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="bio-display">
+                                {user.bio ? (
+                                    <p className="user-bio">{user.bio}</p>
+                                ) : (
+                                    <p className="user-bio placeholder">No bio added yet. Share something about yourself!</p>
+                                )}
+                                <button onClick={() => setIsEditingBio(true)} className="edit-btn">
+                                    Edit Bio &#9998;
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
                     <h3>Interests</h3>
                     {user.interests && user.interests.length > 0 ? (
                         <ul className="interests-list">

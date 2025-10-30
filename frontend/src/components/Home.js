@@ -12,7 +12,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [welcomeMessage, setWelcomeMessage] = useState('');
-  const [isCreateEventOpen, setIsCreateEventOpen] = useState(false);
+  // const [isCreateEventOpen, setIsCreateEventOpen] = useState(false);
 
   const welcomeMessages = [
     "Someone new is waiting to meet you today.",
@@ -82,19 +82,19 @@ const Home = () => {
     navigate(`/event/${eventId}`);
   };
 
-  const handleEventCreated = (newEvent) => {
-    // Refresh events list
-    setEvents(prev => [newEvent, ...prev]);
-  };
+  // const handleEventCreated = (newEvent) => {
+  //   // Refresh events list
+  //   setEvents(prev => [newEvent, ...prev]);
+  // };
 
   return (
     <div className="home-container">
-      <Navbar onCreateEvent={() => setIsCreateEventOpen(true)} />
-      <CreateEvent
+      <Navbar />
+      {/* <CreateEvent
         isOpen={isCreateEventOpen}
         onClose={() => setIsCreateEventOpen(false)}
         onEventCreated={handleEventCreated}
-      />
+      /> */}
 
       <div className="home-content">
         {/* Welcome Section */}

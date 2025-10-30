@@ -45,7 +45,7 @@
     width: 280px;
     height: 280px;
     border-radius: 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f0abe6 0%, #dd8848 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -288,4 +288,82 @@
     .events-grid {
         grid-template-columns: 1fr;
     }
+}
+
+ /* edit bio */
+
+ /* Bio Edit Styles */
+.bio-section {
+    margin: 15px 0;
+}
+
+.bio-display {
+    position: relative;
+}
+
+.edit-btn {
+    /* margin-top: 4px; */
+    padding: 4px 8px;
+    background-color: #0077ff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.edit-btn:hover {
+    background-color: #0066dc;
+}
+
+.bio-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+}
+
+.edit-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.save-btn, .cancel-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.save-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.save-btn:hover:not(:disabled) {
+    background-color: #218838;
+}
+
+.save-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.cancel-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.cancel-btn:hover:not(:disabled) {
+    background-color: #5a6268;
+}
+
+.cancel-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }

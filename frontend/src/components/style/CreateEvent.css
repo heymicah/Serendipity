@@ -116,6 +116,7 @@
   flex-wrap: wrap;
   gap: 15px;
   margin-top: 8px;
+  gap: 1em;
 }
 
 .checkbox-label {
@@ -132,6 +133,7 @@
   width: 18px;
   height: 18px;
   cursor: pointer;
+  margin-right: 8px;
 }
 
 /* Form Hint */
@@ -185,12 +187,12 @@
 }
 
 .btn-submit {
-  background-color: #e8766d;
+  background-color: rgb(241, 141, 48);
   color: white;
 }
 
 .btn-submit:hover:not(:disabled) {
-  background-color: #d66760;
+  background-color: rgb(241, 141, 48);
   transform: scale(1.05);
 }
 
