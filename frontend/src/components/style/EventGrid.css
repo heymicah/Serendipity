@@ -128,17 +128,65 @@
   width: 100%;
   overflow: hidden;
   background: #f5f5f5;
+  position: relative;
 }
 
 .event-image img {
   width: 100%;
   height: auto;
   display: block;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, filter 0.3s ease;
 }
 
 .event-card:hover .event-image img {
   transform: scale(1.05);
+  filter: blur(4px);
+}
+
+/* Hover overlay */
+.event-hover-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.event-card:hover .event-hover-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* View Event Button */
+.view-event-button {
+  background-color: rgb(226, 123, 26);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 25px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-family: 'Raleway', sans-serif;
+  letter-spacing: 0.5px;
+  pointer-events: none;
+}
+
+.view-event-button:hover {
+  background-color: rgb(226, 123, 26);
+  transform: scale(1.05);
+}
+
+.view-event-button:active {
+  transform: scale(0.98);
 }
 
 .event-content {

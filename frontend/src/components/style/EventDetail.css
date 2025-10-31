@@ -1,6 +1,5 @@
 .event-detail-container {
   min-height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
   font-family: 'Raleway', sans-serif;
 }
 
@@ -12,13 +11,25 @@
   color: #333;
 }
 
+/* Backdrop - clickable overlay */
+.event-detail-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 20px;
+}
+
 /* Modal Container */
 .event-detail-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90%;
+  position: relative;
+  width: 100%;
   max-width: 1200px;
   max-height: 90vh;
   background: white;

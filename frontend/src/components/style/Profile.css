@@ -60,6 +60,13 @@
     flex: 1;
 }
 
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
 .user-text-info h1 {
     font-family: 'Libre Baskerville', serif;
     font-size: 42px;
@@ -72,7 +79,30 @@
     font-size: 20px;
     font-weight: 400;
     color: #666;
-    margin: 0 0 24px 0;
+    margin: 0;
+}
+
+.logout-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-family: 'Raleway', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.logout-btn:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
+}
+
+.logout-btn:active {
+    transform: scale(0.98);
 }
 
 .user-text-info h3 {
@@ -98,7 +128,7 @@
 .interests-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 4px;
     list-style: none;
     padding: 0;
     margin: 0;
@@ -106,10 +136,12 @@
 
 .interests-list li {
     background: white;
-    padding: 8px 18px;
-    border-radius: 20px;
-    font-size: 14px;
+    padding: 12px 24px;
+    margin: 6px;
+    border-radius: 25px;
+    font-size: 15px;
     color: #555;
+    font-weight: 500;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transition: all 0.2s ease;
 }
@@ -249,8 +281,18 @@
         max-width: 600px;
     }
 
+    .profile-header {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+    }
+
     .interests-list {
-        justify-content: center;
+        justify-content: flex-start;
+    }
+
+    .interests-container {
+        justify-content: flex-start;
     }
 }
 
@@ -366,4 +408,57 @@
 .cancel-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+/* Interest Editing Styles */
+.interests-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    gap: 4px;
+    justify-content: flex-start;
+}
+
+.interest-bubble {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    margin: 6px;
+    background-color: #ffffff;
+    color: #333;
+    border: 2px solid rgba(255, 179, 107, 0.7);
+    border-radius: 25px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.interest-bubble.selected {
+    background-color: rgb(249, 149, 56);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(255, 179, 107, 1);
+}
+
+.interest-bubble:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 179, 107, 0.7);
+}
+
+.interest-bubble.selected:hover {
+    box-shadow: 0 4px 12px rgba(255, 179, 107, 0.7);
+}
+
+.edit-interests {
+    margin-top: 15px;
+}
+
+.interests-display {
+    position: relative;
+}
+
+.interests-display .edit-btn {
+    margin-top: 16px;
 }

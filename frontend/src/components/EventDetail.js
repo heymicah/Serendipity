@@ -72,7 +72,7 @@ const EventDetail = () => {
   }, [eventId, token]);
 
   const handleBack = () => {
-    navigate('/home');
+    navigate(-1);
   };
 
   const handleSignUp = async () => {
@@ -146,17 +146,25 @@ const EventDetail = () => {
     );
   }
 
+  const handleBackdropClick = (e) => {
+    // Only navigate back if clicking the backdrop itself, not the content
+    if (e.target.classList.contains('event-detail-backdrop')) {
+      handleBack();
+    }
+  };
+
   return (
     <div className="event-detail-container">
       <Navbar />
 
-      <div className="event-detail-modal">
-        {/* Back Button */}
-        <button className="back-button" onClick={handleBack}>
-          ← Back
-        </button>
+      <div className="event-detail-backdrop" onClick={handleBackdropClick}>
+        <div className="event-detail-modal">
+          {/* Back Button */}
+          <button className="back-button" onClick={handleBack}>
+            ← Back
+          </button>
 
-        <div className="event-detail-content">
+          <div className="event-detail-content">
           {/* Left side - Event Image */}
           <div className="event-detail-image-section">
             <img
@@ -233,6 +241,7 @@ const EventDetail = () => {
               <p className="attendees-count">{event.attendees_count || 0} Attending</p>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>

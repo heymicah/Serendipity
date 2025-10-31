@@ -117,7 +117,11 @@ const Home = () => {
           {!loading && !error && events.length > 0 && (
             <div className="events-grid">
               {events.map((event) => (
-                <div key={event.id} className="event-tile">
+                <div
+                  key={event.id}
+                  className="event-tile"
+                  onClick={() => handleViewEvent(event.id)}
+                >
                   <div className="event-image-container">
                     <img
                       src={event.image}
@@ -132,10 +136,7 @@ const Home = () => {
                       </p>
                     </div>
                     <div className="event-hover-overlay">
-                      <button
-                        className="view-event-button"
-                        onClick={() => handleViewEvent(event.id)}
-                      >
+                      <button className="view-event-button">
                         View Event
                       </button>
                     </div>

@@ -39,6 +39,10 @@ const EventGrid = () => {
     }
   };
 
+  const handleViewEvent = (eventId) => {
+    navigate(`/event/${eventId}`);
+  };
+
   if (loading) {
     return (
       <div className="event-grid-container">
@@ -80,10 +84,19 @@ const EventGrid = () => {
       ) : (
         <div className="pinterest-grid">
           {events.map((event) => (
-            <div key={event.id} className="event-card">
+            <div
+              key={event.id}
+              className="event-card"
+              onClick={() => handleViewEvent(event.id)}
+            >
               {event.image && (
                 <div className="event-image">
                   <img src={event.image} alt={event.title} />
+                  <div className="event-hover-overlay">
+                    <button className="view-event-button">
+                      View Event
+                    </button>
+                  </div>
                 </div>
               )}
               <div className="event-content">

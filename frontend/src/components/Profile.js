@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import Navbar from './Navbar';
 import './style/Profile.css'
 
 const Profile = () => {
     const navigate = useNavigate();
+    const { logout } = useAuth();
     const [user, setUser] = useState(null);
     const [attendingEvents, setAttendingEvents] = useState([]);
     const [hostingEvents, setHostingEvents] = useState([]);
@@ -14,7 +16,14 @@ const Profile = () => {
     // Edit mode states
     const [isEditingBio, setIsEditingBio] = useState(false);
     const [editedBio, setEditedBio] = useState('');
+    const [isEditingInterests, setIsEditingInterests] = useState(false);
+    const [editedInterests, setEditedInterests] = useState([]);
     const [saving, setSaving] = useState(false);
+
+    const interestOptions = [
+        'Sports', 'Music', 'Art', 'Technology', 'Science',
+        'Reading', 'Gaming', 'Cooking', 'Travel'
+    ];
 
     useEffect(() => {
         fetchUserProfile();
@@ -39,6 +48,7 @@ const Profile = () => {
             const data = await response.json();
             setUser(data.user);
             setEditedBio(data.user.bio || '');
+            setEditedInterests(data.user.interests || []);
         } catch (err) {
             setError(err.message);
         }
@@ -120,6 +130,56 @@ const Profile = () => {
         setIsEditingBio(false);
     };
 
+    const handleInterestToggle = (interest) => {
+        setEditedInterests(prev =>
+            prev.includes(interest)
+                ? prev.filter(i => i !== interest)
+                : [...prev, interest]
+        );
+    };
+
+    const handleSaveInterests = async () => {
+        if (editedInterests.length === 0) {
+            setError('Please select at least one interest');
+            return;
+        }
+
+        setSaving(true);
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://127.0.0.1:5001/api/profile/interests', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ interests: editedInterests })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update interests');
+            }
+
+            const data = await response.json();
+            setUser(data.user);
+            setIsEditingInterests(false);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleCancelInterests = () => {
+        setEditedInterests(user.interests || []);
+        setIsEditingInterests(false);
+    };
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
+
     const getGradYear = (gradeLevel) => {
         const currentYear = new Date().getFullYear();
         const gradeLevels = {
@@ -166,8 +226,15 @@ const Profile = () => {
                     )}
                 </div>
                 <div className="user-text-info">
-                    <h1>{user.first_name} {user.last_name}</h1>
-                    <h2>{user.school}, {getGradYear(user.grade_level)}</h2>
+                    <div className="profile-header">
+                        <div>
+                            <h1>{user.first_name} {user.last_name}</h1>
+                            <h2>{user.school}, {getGradYear(user.grade_level)}</h2>
+                        </div>
+                        <button onClick={handleLogout} className="logout-btn">
+                            Logout
+                        </button>
+                    </div>
                     
                     {/* Editable Bio Section */}
                     <div className="bio-section">
@@ -212,14 +279,51 @@ const Profile = () => {
                     </div>
 
                     <h3>Interests</h3>
-                    {user.interests && user.interests.length > 0 ? (
-                        <ul className="interests-list">
-                            {user.interests.map((interest, index) => (
-                                <li key={index}>{interest}</li>
-                            ))}
-                        </ul>
+                    {isEditingInterests ? (
+                        <div className="edit-interests">
+                            <div className="interests-container">
+                                {interestOptions.map(interest => (
+                                    <div
+                                        key={interest}
+                                        className={`interest-bubble ${editedInterests.includes(interest) ? 'selected' : ''}`}
+                                        onClick={() => handleInterestToggle(interest)}
+                                    >
+                                        {interest}
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="edit-buttons">
+                                <button
+                                    onClick={handleSaveInterests}
+                                    className="save-btn"
+                                    disabled={saving}
+                                >
+                                    {saving ? 'Saving...' : 'Save'}
+                                </button>
+                                <button
+                                    onClick={handleCancelInterests}
+                                    className="cancel-btn"
+                                    disabled={saving}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
                     ) : (
-                        <p className="no-interests">No interests added yet.</p>
+                        <div className="interests-display">
+                            {user.interests && user.interests.length > 0 ? (
+                                <ul className="interests-list">
+                                    {user.interests.map((interest, index) => (
+                                        <li key={index}>{interest}</li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p className="no-interests">No interests added yet.</p>
+                            )}
+                            <button onClick={() => setIsEditingInterests(true)} className="edit-btn">
+                                Edit Interests &#9998;
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>

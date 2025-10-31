@@ -73,6 +73,7 @@
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
 .event-tile:hover {
@@ -150,6 +151,7 @@
   transition: background-color 0.3s ease, transform 0.2s ease;
   font-family: 'Raleway', sans-serif;
   letter-spacing: 0.5px;
+  pointer-events: none;
 }
 
 .view-event-button:hover {

@@ -31,9 +31,13 @@
   color: #999;
   text-decoration: none;
   font-size: 14px;
-  padding-bottom: 20px;
   transition: color 0.3s ease;
   position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Raleway', sans-serif;
+  padding: 0;
 }
 
 .nav-link:hover {
@@ -43,7 +47,16 @@
 .nav-link.active {
   color: #333;
   font-weight: 500;
-  border-bottom: 2px solid rgb(226, 123, 26);
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgb(226, 123, 26);
 }
 
 .create-event-btn {
