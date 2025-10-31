@@ -58,8 +58,7 @@ const ExploreDemo = () => {
       <Navbar />
 
       <div className="explore-header">
-        <h2>Explore all Event Categories</h2>
-        <p>Click on an interest to see all events in that category</p>
+        <h2>Browse by category</h2>
       </div>
 
       <div className="explore-grid">
@@ -70,15 +69,9 @@ const ExploreDemo = () => {
             onMouseEnter={() => setHoveredCard(index)}
             onMouseLeave={() => setHoveredCard(null)}
             onClick={() => handleCategoryClick(category.name)}
+            style={{ backgroundImage: `url(${category.image})` }}
           >
-            <div
-              className="aura-background"
-              style={{ background: category.gradient }}
-            />
-            <div
-              className="aura-inner"
-              style={{ background: category.gradient }}
-            />
+            <div className="card-overlay" />
             <div className="card-text">
               <h3>{category.name}</h3>
               <p>{category.events} events</p>

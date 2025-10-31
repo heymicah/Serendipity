@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './style/EventDetail.css';
 import Navbar from './Navbar';
+import UserProfileModal from './UserProfileModal';
 
 const EventDetail = () => {
   const { eventId } = useParams();
@@ -13,6 +14,8 @@ const EventDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isRsvping, setIsRsvping] = useState(false);
+  const [isUserProfileModalOpen, setIsUserProfileModalOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
 
   useEffect(() => {
     const fetchEventDetail = async () => {
@@ -119,6 +122,18 @@ const EventDetail = () => {
     return event.host_id === user.id;
   };
 
+  const handleHostNameClick = (e) => {
+    e.stopPropagation(); // Prevent any parent click handlers
+    console.log('Host name clicked, host_id:', event?.host_id);
+    if (event?.host_id) {
+      setSelectedUserId(event.host_id);
+      setIsUserProfileModalOpen(true);
+    } else {
+      console.error('No host_id available in event:', event);
+      alert('Unable to view host profile. This event may have been created before host profiles were available.');
+    }
+  };
+
   const formatDate = (dateStr) => {
     try {
       const date = new Date(dateStr);
@@ -191,7 +206,13 @@ const EventDetail = () => {
                   </div>
                 )}
               </div>
-              <div className="host-name">{event.host || 'Unknown Host'}</div>
+              <div
+                className="host-name clickable-host-name"
+                onClick={(e) => handleHostNameClick(e)}
+                title="View profile"
+              >
+                {event.host || 'Unknown Host'}
+              </div>
             </div>
 
             {/* Event Title and Category */}
@@ -244,6 +265,13 @@ const EventDetail = () => {
         </div>
         </div>
       </div>
+
+      {/* User Profile Modal */}
+      <UserProfileModal
+        isOpen={isUserProfileModalOpen}
+        onClose={() => setIsUserProfileModalOpen(false)}
+        userId={selectedUserId}
+      />
     </div>
   );
 };

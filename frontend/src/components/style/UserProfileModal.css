@@ -1,0 +1,335 @@
+/* User Profile Modal Overlay */
+.user-profile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+/* Modal Container */
+.user-profile-modal {
+    background: white;
+    border-radius: 20px;
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Close Button */
+.user-profile-modal .close-modal-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    font-size: 32px;
+    color: #666;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.user-profile-modal .close-modal-btn:hover {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+/* Loading and Error States */
+.profile-loading,
+.profile-error {
+    padding: 60px 40px;
+    text-align: center;
+    color: #666;
+    font-size: 16px;
+}
+
+.profile-error {
+    color: #dc3545;
+}
+
+/* Profile Content */
+.user-profile-content {
+    padding: 40px;
+}
+
+/* Header Section */
+.profile-header-section {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.profile-avatar-large {
+    flex-shrink: 0;
+}
+
+.profile-avatar-large img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.profile-avatar-placeholder-large {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f0abe6 0%, #dd8848 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    font-weight: 600;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    letter-spacing: 2px;
+}
+
+.profile-header-info h2 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 32px;
+    font-weight: normal;
+    color: #333;
+    margin: 0 0 8px 0;
+}
+
+.profile-school {
+    font-size: 18px;
+    color: #666;
+    margin: 0;
+    font-weight: 400;
+}
+
+/* Profile Sections */
+.profile-section {
+    margin-bottom: 32px;
+}
+
+.profile-section h3 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 22px;
+    font-weight: normal;
+    color: #333;
+    margin: 0 0 16px 0;
+}
+
+.profile-bio {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #555;
+    margin: 0;
+    font-weight: 300;
+}
+
+/* Interests */
+.profile-interests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.interest-tag {
+    background: white;
+    border: 2px solid rgba(255, 179, 107, 0.7);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.interest-tag:hover {
+    background-color: rgb(249, 149, 56);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 179, 107, 0.4);
+}
+
+/* Events List */
+.profile-events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.profile-event-item {
+    display: flex;
+    gap: 16px;
+    background: #fafafa;
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.profile-event-item:hover {
+    background: white;
+    border-color: #e0e0e0;
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.profile-event-image-small {
+    flex-shrink: 0;
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #e0e0e0;
+}
+
+.profile-event-image-small img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-event-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.profile-event-info h4 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 18px;
+    font-weight: normal;
+    color: #333;
+    margin: 0 0 8px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profile-event-category {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.profile-event-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+
+.profile-event-details span {
+    font-size: 13px;
+    color: #666;
+    font-weight: 300;
+}
+
+.profile-event-attendees {
+    font-size: 13px;
+    color: #555;
+    font-weight: 400;
+}
+
+.no-events-text {
+    color: #999;
+    font-size: 15px;
+    font-style: italic;
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .user-profile-modal {
+        max-width: 100%;
+        border-radius: 20px 20px 0 0;
+        max-height: 95vh;
+    }
+
+    .user-profile-content {
+        padding: 30px 24px;
+    }
+
+    .profile-header-section {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+    }
+
+    .profile-header-info h2 {
+        font-size: 26px;
+    }
+
+    .profile-school {
+        font-size: 16px;
+    }
+
+    .profile-section h3 {
+        font-size: 20px;
+    }
+
+    .profile-event-item {
+        flex-direction: column;
+    }
+
+    .profile-event-image-small {
+        width: 100%;
+        height: 180px;
+    }
+
+    .profile-event-info h4 {
+        white-space: normal;
+    }
+}
+
+/* Scrollbar Styling */
+.user-profile-modal::-webkit-scrollbar {
+    width: 8px;
+}
+
+.user-profile-modal::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.user-profile-modal::-webkit-scrollbar-thumb {
+    background: #c0c0c0;
+    border-radius: 10px;
+}
+
+.user-profile-modal::-webkit-scrollbar-thumb:hover {
+    background: #a0a0a0;
+}

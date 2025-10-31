@@ -162,15 +162,20 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 48px;
+    margin-bottom: 60px;
+}
+
+.user-events:last-of-type {
+    margin-top: 80px;
 }
 
 .user-events h2 {
-    font-family: 'Libre Baskerville', serif;
-    font-size: 36px;
-    font-weight: normal;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
     color: #333;
-    text-align: center;
-    margin: 0 0 48px 0;
+    text-align: left;
+    margin: 0 0 24px 0;
 }
 
 .no-events-message {
@@ -461,4 +466,46 @@
 
 .interests-display .edit-btn {
     margin-top: 16px;
+}
+
+/* Edit Event Button Styles */
+.event-header-with-edit {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.event-header-with-edit h3 {
+    flex: 1;
+    margin: 0;
+}
+
+.edit-event-btn {
+    background-color: #0077ff;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.edit-event-btn:hover {
+    background-color: #0066dc;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 119, 255, 0.3);
+}
+
+.edit-event-btn:active {
+    transform: translateY(0);
+}
+
+.hosting-event-card .profile-event-content {
+    position: relative;
 }
