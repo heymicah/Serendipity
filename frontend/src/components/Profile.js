@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navbar from './Navbar';
+import EditEvent from './EditEvent';
 import './style/Profile.css'
 
 const Profile = () => {
@@ -12,13 +13,17 @@ const Profile = () => {
     const [hostingEvents, setHostingEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    
+
     // Edit mode states
     const [isEditingBio, setIsEditingBio] = useState(false);
     const [editedBio, setEditedBio] = useState('');
     const [isEditingInterests, setIsEditingInterests] = useState(false);
     const [editedInterests, setEditedInterests] = useState([]);
     const [saving, setSaving] = useState(false);
+
+    // Edit event modal state
+    const [isEditEventModalOpen, setIsEditEventModalOpen] = useState(false);
+    const [selectedEventId, setSelectedEventId] = useState(null);
 
     const interestOptions = [
         'Sports', 'Music', 'Art', 'Technology', 'Science',
@@ -178,6 +183,17 @@ const Profile = () => {
     const handleLogout = () => {
         logout();
         navigate('/login');
+    };
+
+    const handleEditEvent = (eventId, e) => {
+        e.stopPropagation(); // Prevent navigation to event detail page
+        setSelectedEventId(eventId);
+        setIsEditEventModalOpen(true);
+    };
+
+    const handleEventUpdated = (updatedEvent) => {
+        // Refresh the hosting events list
+        fetchHostingEvents();
     };
 
     const getGradYear = (gradeLevel) => {
@@ -341,7 +357,7 @@ const Profile = () => {
                         {hostingEvents.map((event) => (
                             <div
                                 key={event.id}
-                                className="profile-event-card"
+                                className="profile-event-card hosting-event-card"
                                 onClick={() => navigate(`/event/${event.id}`)}
                                 style={{ cursor: 'pointer' }}
                             >
@@ -351,7 +367,16 @@ const Profile = () => {
                                     </div>
                                 )}
                                 <div className="profile-event-content">
-                                    <h3>{event.title}</h3>
+                                    <div className="event-header-with-edit">
+                                        <h3>{event.title}</h3>
+                                        <button
+                                            className="edit-event-btn"
+                                            onClick={(e) => handleEditEvent(event.id, e)}
+                                            title="Edit event"
+                                        >
+                                            ✏️ Edit
+                                        </button>
+                                    </div>
                                     <div className="event-category-badge">{event.category}</div>
                                     {event.date && (
                                         <div className="event-detail">
@@ -431,6 +456,14 @@ const Profile = () => {
                     </div>
                 )}
             </div>
+
+            {/* Edit Event Modal */}
+            <EditEvent
+                isOpen={isEditEventModalOpen}
+                onClose={() => setIsEditEventModalOpen(false)}
+                eventId={selectedEventId}
+                onEventUpdated={handleEventUpdated}
+            />
         </div>
     )
 }

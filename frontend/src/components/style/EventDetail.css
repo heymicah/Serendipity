@@ -136,6 +136,17 @@
   color: #333;
 }
 
+.clickable-host-name {
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+  user-select: none;
+}
+
+.clickable-host-name:hover {
+  color: #0077ff;
+  transform: translateX(2px);
+}
+
 /* Event Title and Category */
 .event-detail-title {
   font-family: 'Libre Baskerville', serif;

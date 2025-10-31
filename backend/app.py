@@ -226,15 +226,53 @@ def get_user_by_id(user_id):
         if not user:
             return jsonify({'message': 'User not found'}), 404
 
-        return jsonify({
-            'user': {
-                'id': str(user['_id']),
-                'first_name': user['first_name'],
-                'last_name': user['last_name'],
-                'profile_pic': user.get('profile_pic'),
-                'bio': user.get('bio')
-            }
-        }), 200
+        # Get query parameter to check if full profile is requested
+        full_profile = request.args.get('full', 'false').lower() == 'true'
+
+        if full_profile:
+            # Fetch hosting events for this user
+            hosting_events = mongo.db.events.find({
+                'host_id': user_id
+            }).sort('date', 1)
+
+            events_list = []
+            for event in hosting_events:
+                events_list.append({
+                    'id': str(event['_id']),
+                    'title': event.get('title'),
+                    'description': event.get('description'),
+                    'date': event.get('date'),
+                    'time': event.get('time'),
+                    'location': event.get('location'),
+                    'category': event.get('category'),
+                    'image': event.get('image'),
+                    'attendees_count': len(event.get('registered_users', []))
+                })
+
+            return jsonify({
+                'user': {
+                    'id': str(user['_id']),
+                    'first_name': user['first_name'],
+                    'last_name': user['last_name'],
+                    'profile_pic': user.get('profile_pic'),
+                    'bio': user.get('bio'),
+                    'school': user.get('school'),
+                    'grade_level': user.get('grade_level'),
+                    'interests': user.get('interests', []),
+                    'hosting_events': events_list
+                }
+            }), 200
+        else:
+            # Return basic profile (backward compatibility)
+            return jsonify({
+                'user': {
+                    'id': str(user['_id']),
+                    'first_name': user['first_name'],
+                    'last_name': user['last_name'],
+                    'profile_pic': user.get('profile_pic'),
+                    'bio': user.get('bio')
+                }
+            }), 200
 
     except Exception as e:
         print(f"Error fetching user: {e}")
@@ -380,43 +418,43 @@ def get_event_categories():
         # Get user's school to filter events
         user_school = current_user.get('school')
 
-        # Define categories with their gradients
+        # Define categories with their images
         categories = [
             {
                 'name': 'Sports',
-                'gradient': 'radial-gradient(circle, #ffecd2 0%, #fcb69f 50%, #fdcb6e 100%)'
+                'image': 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&q=80'
             },
             {
                 'name': 'Music',
-                'gradient': 'radial-gradient(circle at 40% 30%, rgba(240, 147, 251, 0.9) 0%, rgba(245, 87, 108, 0.7) 50%, rgba(240, 147, 251, 0.4) 100%)'
+                'image': 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800&q=80'
             },
             {
                 'name': 'Art',
-                'gradient': 'radial-gradient(circle at 50% 50%, rgba(79, 172, 254, 0.9) 0%, rgba(0, 242, 254, 0.7) 50%, rgba(79, 172, 254, 0.4) 100%)'
+                'image': 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800&q=80'
             },
             {
                 'name': 'Technology',
-                'gradient': 'radial-gradient(circle at 35% 45%, rgba(67, 233, 123, 0.9) 0%, rgba(56, 249, 215, 0.7) 50%, rgba(67, 233, 123, 0.4) 100%)'
+                'image': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80'
             },
             {
                 'name': 'Science',
-                'gradient': 'radial-gradient(circle at 45% 35%, rgba(250, 112, 154, 0.9) 0%, rgba(254, 225, 64, 0.7) 50%, rgba(250, 112, 154, 0.4) 100%)'
+                'image': 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800&q=80'
             },
             {
                 'name': 'Reading',
-                'gradient': 'radial-gradient(circle, #d4b5f7 0%, #b3e5fc 100%)'
+                'image': 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80'
             },
             {
                 'name': 'Gaming',
-                'gradient': 'radial-gradient(circle, #eb3349 0%, #f093fb 50%, #764ba2 100%)'
+                'image': 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&q=80'
             },
             {
                 'name': 'Cooking',
-                'gradient': 'radial-gradient(circle at 40% 40%, rgba(255, 154, 86, 0.9) 0%, rgba(255, 106, 136, 0.7) 50%, rgba(255, 154, 86, 0.4) 100%)'
+                'image': 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80'
             },
             {
                 'name': 'Travel',
-                'gradient': 'radial-gradient(circle, #4facfe 0%, #3cc9c9 50%, #43e97b 100%)'
+                'image': 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80'
             }
         ]
 
@@ -429,7 +467,7 @@ def get_event_categories():
             })
             categories_with_counts.append({
                 'name': category['name'],
-                'gradient': category['gradient'],
+                'image': category['image'],
                 'events': count
             })
 
@@ -482,6 +520,7 @@ def get_events_by_category(category_name):
                 'category': event.get('category'),
                 'image': event.get('image'),
                 'host': event.get('host'),
+                'host_id': event.get('host_id'),
                 'school': event.get('school')
             })
 
@@ -687,6 +726,8 @@ def get_event_by_id(event_id):
             'description': event.get('description'),
             'date': str(event.get('date', '')),
             'time': event.get('time'),
+            'start_time': event.get('start_time'),
+            'end_time': event.get('end_time'),
             'location': event.get('location'),
             'category': event.get('category'),
             'image': event.get('image'),
@@ -772,6 +813,7 @@ def get_all_events():
                 'category': event.get('category'),
                 'image': event.get('image'),
                 'host': event.get('host'),
+                'host_id': event.get('host_id'),
                 'school': event.get('school'),
                 'organizer': event.get('host', 'Unknown'),
                 'attendees_count': len(registered_users),
@@ -807,16 +849,16 @@ def update_bio():
     try:
         request_data = request.get_json()
         bio = request_data.get('bio', '').strip()
-        
+
         # Update the user's bio in MongoDB
         mongo.db.users.update_one(
             {'_id': current_user['_id']},
             {'$set': {'bio': bio}}
         )
-        
+
         # Fetch updated user data
         updated_user = mongo.db.users.find_one({'_id': current_user['_id']})
-        
+
         return jsonify({
             'message': 'Bio updated successfully',
             'user': {
@@ -832,9 +874,158 @@ def update_bio():
                 'profile_pic': updated_user.get('profile_pic')
             }
         }), 200
-            
+
     except Exception as e:
         print(f"Error updating bio: {e}")
+        return jsonify({'message': f'Server error: {str(e)}'}), 500
+
+@app.route('/api/profile/interests', methods=['PUT', 'OPTIONS'])
+def update_interests():
+    if request.method == 'OPTIONS':
+        return '', 200
+
+    # Get current user from token
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Token is missing'}), 401
+
+    try:
+        if token.startswith('Bearer '):
+            token = token[7:]
+        data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        current_user = mongo.db.users.find_one({'_id': ObjectId(data['user_id'])})
+        if not current_user:
+            return jsonify({'message': 'User not found'}), 401
+    except Exception as e:
+        return jsonify({'message': f'Token is invalid: {str(e)}'}), 401
+
+    try:
+        request_data = request.get_json()
+        interests = request_data.get('interests', [])
+
+        # Update the user's interests in MongoDB
+        mongo.db.users.update_one(
+            {'_id': current_user['_id']},
+            {'$set': {'interests': interests}}
+        )
+
+        # Fetch updated user data
+        updated_user = mongo.db.users.find_one({'_id': current_user['_id']})
+
+        return jsonify({
+            'message': 'Interests updated successfully',
+            'user': {
+                'id': str(updated_user['_id']),
+                'first_name': updated_user['first_name'],
+                'last_name': updated_user['last_name'],
+                'email': updated_user['email'],
+                'gender': updated_user.get('gender'),
+                'school': updated_user.get('school'),
+                'grade_level': updated_user.get('grade_level'),
+                'interests': updated_user.get('interests', []),
+                'bio': updated_user.get('bio'),
+                'profile_pic': updated_user.get('profile_pic')
+            }
+        }), 200
+
+    except Exception as e:
+        print(f"Error updating interests: {e}")
+        return jsonify({'message': f'Server error: {str(e)}'}), 500
+
+@app.route('/api/events/<event_id>', methods=['PUT', 'OPTIONS'])
+def update_event(event_id):
+    if request.method == 'OPTIONS':
+        return '', 200
+
+    # Get current user from token
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Token is missing'}), 401
+
+    try:
+        if token.startswith('Bearer '):
+            token = token[7:]
+        data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        current_user = mongo.db.users.find_one({'_id': ObjectId(data['user_id'])})
+        if not current_user:
+            return jsonify({'message': 'User not found'}), 401
+    except Exception as e:
+        return jsonify({'message': f'Token is invalid: {str(e)}'}), 401
+
+    try:
+        # Find the event
+        event = mongo.db.events.find_one({'_id': ObjectId(event_id)})
+        if not event:
+            return jsonify({'message': 'Event not found'}), 404
+
+        # Verify that the current user is the host of the event
+        user_id = str(current_user['_id'])
+        if event.get('host_id') != user_id:
+            return jsonify({'message': 'Unauthorized: Only the event host can edit this event'}), 403
+
+        # Get updated event data
+        event_data = request.get_json()
+
+        # Validation
+        required_fields = ['title', 'description', 'category', 'date', 'time', 'location']
+        missing_fields = [field for field in required_fields if not event_data.get(field)]
+
+        if missing_fields:
+            return jsonify({
+                'message': f'Missing required fields: {", ".join(missing_fields)}'
+            }), 400
+
+        # Update event document
+        update_data = {
+            'title': event_data['title'],
+            'description': event_data['description'],
+            'category': event_data['category'],
+            'date': event_data['date'],
+            'time': event_data['time'],
+            'start_time': event_data.get('start_time'),
+            'end_time': event_data.get('end_time'),
+            'location': event_data['location'],
+            'school_years': event_data.get('school_years', 'All'),
+            'genders': event_data.get('genders', 'All'),
+            'image': event_data.get('image', event.get('image')),
+            'updated_at': datetime.utcnow()
+        }
+
+        mongo.db.events.update_one(
+            {'_id': ObjectId(event_id)},
+            {'$set': update_data}
+        )
+
+        # Fetch updated event
+        updated_event = mongo.db.events.find_one({'_id': ObjectId(event_id)})
+
+        # Return updated event
+        event_response = {
+            'id': str(updated_event['_id']),
+            'title': updated_event['title'],
+            'description': updated_event['description'],
+            'category': updated_event['category'],
+            'date': str(updated_event['date']),
+            'time': updated_event['time'],
+            'location': updated_event['location'],
+            'image': updated_event['image'],
+            'host': updated_event['host'],
+            'host_id': updated_event['host_id'],
+            'school': updated_event['school'],
+            'school_years': updated_event.get('school_years', 'All'),
+            'genders': updated_event.get('genders', 'All'),
+            'attendees_count': len(updated_event.get('registered_users', []))
+        }
+
+        return jsonify({
+            'message': 'Event updated successfully',
+            'event': event_response
+        }), 200
+
+    except Exception as e:
+        print(f"Error updating event: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'message': f'Server error: {str(e)}'}), 500
 
 if __name__ == '__main__':

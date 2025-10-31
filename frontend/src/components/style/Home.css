@@ -38,11 +38,11 @@
 }
 
 .section-title {
-  font-family: 'Libre Baskerville', serif;
-  font-size: 32px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 28px;
   color: #333;
   margin-bottom: 30px;
-  font-weight: 400;
+  font-weight: 900;
 }
 
 /* Loading, Error, and Empty States */
