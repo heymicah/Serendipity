@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import './style/EventDetail.css';
 import Navbar from './Navbar';
 import UserProfileModal from './UserProfileModal';
+import AttendeesModal from './AttendeesModal';
 
 const EventDetail = () => {
   const { eventId } = useParams();
@@ -15,6 +16,7 @@ const EventDetail = () => {
   const [error, setError] = useState(null);
   const [isRsvping, setIsRsvping] = useState(false);
   const [isUserProfileModalOpen, setIsUserProfileModalOpen] = useState(false);
+  const [isAttendeesModalOpen, setIsAttendeesModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
 
   useEffect(() => {
@@ -132,6 +134,15 @@ const EventDetail = () => {
       console.error('No host_id available in event:', event);
       alert('Unable to view host profile. This event may have been created before host profiles were available.');
     }
+  };
+
+  const handleAttendeeClick = (userId) => {
+    setSelectedUserId(userId);
+    setIsUserProfileModalOpen(true);
+  };
+
+  const handleFindBuddyClick = () => {
+    setIsAttendeesModalOpen(true);
   };
 
   const formatDate = (dateStr) => {
@@ -260,6 +271,14 @@ const EventDetail = () => {
                 {isUserHost() ? 'Hosting' : (isRsvping ? 'Loading...' : (event.user_rsvp ? 'Cancel RSVP' : 'Sign Up'))}
               </button>
               <p className="attendees-count">{event.attendees_count || 0} Attending</p>
+              {event.attendees_count > 0 && (
+                <button
+                  className="find-buddy-button"
+                  onClick={handleFindBuddyClick}
+                >
+                  Find an Attending Buddy
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -271,6 +290,14 @@ const EventDetail = () => {
         isOpen={isUserProfileModalOpen}
         onClose={() => setIsUserProfileModalOpen(false)}
         userId={selectedUserId}
+      />
+
+      {/* Attendees Modal */}
+      <AttendeesModal
+        isOpen={isAttendeesModalOpen}
+        onClose={() => setIsAttendeesModalOpen(false)}
+        eventId={eventId}
+        onAttendeeClick={handleAttendeeClick}
       />
     </div>
   );

@@ -9,6 +9,8 @@ const UserProfileModal = ({ isOpen, onClose, userId }) => {
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [emailRevealed, setEmailRevealed] = useState(false);
+  const [loadingEmail, setLoadingEmail] = useState(false);
 
   const fetchUserProfile = async () => {
     console.log('Fetching user profile for userId:', userId);
@@ -43,8 +45,39 @@ const UserProfileModal = ({ isOpen, onClose, userId }) => {
     console.log('UserProfileModal useEffect - isOpen:', isOpen, 'userId:', userId);
     if (isOpen && userId) {
       fetchUserProfile();
+      setEmailRevealed(false); // Reset email reveal state when opening modal
     }
   }, [isOpen, userId]);
+
+  const handleReachOut = async () => {
+    if (emailRevealed) return; // Already revealed
+
+    try {
+      setLoadingEmail(true);
+      const response = await fetch(`http://127.0.0.1:5001/api/user/${userId}?full=true&email=true`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch email');
+      }
+
+      const data = await response.json();
+      setUserProfile(prev => ({
+        ...prev,
+        email: data.user.email
+      }));
+      setEmailRevealed(true);
+      setLoadingEmail(false);
+    } catch (error) {
+      console.error('Error fetching email:', error);
+      alert('Failed to load email. Please try again.');
+      setLoadingEmail(false);
+    }
+  };
 
   const getGradYear = (gradeLevel) => {
     const currentYear = new Date().getFullYear();
@@ -101,6 +134,26 @@ const UserProfileModal = ({ isOpen, onClose, userId }) => {
                     {userProfile.grade_level && `, ${getGradYear(userProfile.grade_level)}`}
                   </p>
                 )}
+
+                {/* Reach Out Button */}
+                <div className="reach-out-section">
+                  {!emailRevealed ? (
+                    <button
+                      className="reach-out-button"
+                      onClick={handleReachOut}
+                      disabled={loadingEmail}
+                    >
+                      {loadingEmail ? 'Loading...' : 'Reach Out'}
+                    </button>
+                  ) : (
+                    <div className="email-revealed">
+                      <span className="email-label">Email:</span>
+                      <a href={`mailto:${userProfile.email}`} className="email-link">
+                        {userProfile.email}
+                      </a>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 

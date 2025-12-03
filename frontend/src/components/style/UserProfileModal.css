@@ -128,8 +128,73 @@
 .profile-school {
     font-size: 18px;
     color: #666;
-    margin: 0;
+    margin: 0 0 16px 0;
     font-weight: 400;
+}
+
+/* Reach Out Section */
+.reach-out-section {
+    margin-top: 16px;
+}
+
+.reach-out-button {
+    background-color: rgb(241, 141, 48);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Raleway', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.reach-out-button:hover {
+    background-color: rgb(230, 130, 38);
+    transform: scale(1.05);
+}
+
+.reach-out-button:active {
+    transform: scale(0.98);
+}
+
+.reach-out-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.email-revealed {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 16px;
+    background-color: #f8f8f8;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+}
+
+.email-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.email-link {
+    font-size: 15px;
+    color: rgb(241, 141, 48);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+    word-break: break-all;
+}
+
+.email-link:hover {
+    color: rgb(230, 130, 38);
+    text-decoration: underline;
 }
 
 /* Profile Sections */

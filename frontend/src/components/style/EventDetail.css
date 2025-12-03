@@ -256,7 +256,32 @@
 .attendees-count {
   font-size: 15px;
   color: #666;
-  margin: 0;
+  margin: 0 0 16px 0;
+}
+
+/* Find Buddy Button */
+.find-buddy-button {
+  background-color: transparent;
+  color: rgb(241, 141, 48);
+  border: 2px solid rgb(241, 141, 48);
+  padding: 10px 30px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Raleway', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+.find-buddy-button:hover {
+  background-color: rgb(241, 141, 48);
+  color: white;
+  transform: scale(1.05);
+}
+
+.find-buddy-button:active {
+  transform: scale(0.98);
 }
 
 /* Responsive Design */

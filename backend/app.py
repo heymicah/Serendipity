@@ -226,8 +226,9 @@ def get_user_by_id(user_id):
         if not user:
             return jsonify({'message': 'User not found'}), 404
 
-        # Get query parameter to check if full profile is requested
+        # Get query parameters
         full_profile = request.args.get('full', 'false').lower() == 'true'
+        include_email = request.args.get('email', 'false').lower() == 'true'
 
         if full_profile:
             # Fetch hosting events for this user
@@ -249,30 +250,38 @@ def get_user_by_id(user_id):
                     'attendees_count': len(event.get('registered_users', []))
                 })
 
-            return jsonify({
-                'user': {
-                    'id': str(user['_id']),
-                    'first_name': user['first_name'],
-                    'last_name': user['last_name'],
-                    'profile_pic': user.get('profile_pic'),
-                    'bio': user.get('bio'),
-                    'school': user.get('school'),
-                    'grade_level': user.get('grade_level'),
-                    'interests': user.get('interests', []),
-                    'hosting_events': events_list
-                }
-            }), 200
+            user_data = {
+                'id': str(user['_id']),
+                'first_name': user['first_name'],
+                'last_name': user['last_name'],
+                'profile_pic': user.get('profile_pic'),
+                'bio': user.get('bio'),
+                'school': user.get('school'),
+                'grade_level': user.get('grade_level'),
+                'interests': user.get('interests', []),
+                'hosting_events': events_list
+            }
+
+            # Include email if requested
+            if include_email:
+                user_data['email'] = user.get('email')
+
+            return jsonify({'user': user_data}), 200
         else:
             # Return basic profile (backward compatibility)
-            return jsonify({
-                'user': {
-                    'id': str(user['_id']),
-                    'first_name': user['first_name'],
-                    'last_name': user['last_name'],
-                    'profile_pic': user.get('profile_pic'),
-                    'bio': user.get('bio')
-                }
-            }), 200
+            user_data = {
+                'id': str(user['_id']),
+                'first_name': user['first_name'],
+                'last_name': user['last_name'],
+                'profile_pic': user.get('profile_pic'),
+                'bio': user.get('bio')
+            }
+
+            # Include email if requested
+            if include_email:
+                user_data['email'] = user.get('email')
+
+            return jsonify({'user': user_data}), 200
 
     except Exception as e:
         print(f"Error fetching user: {e}")
@@ -744,6 +753,59 @@ def get_event_by_id(event_id):
 
     except Exception as e:
         print(f"Error fetching event: {e}")
+        return jsonify({'message': f'Server error: {str(e)}'}), 500
+
+@app.route('/api/events/<event_id>/attendees', methods=['GET', 'OPTIONS'])
+def get_event_attendees(event_id):
+    if request.method == 'OPTIONS':
+        return '', 200
+
+    # Get current user from token
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Token is missing'}), 401
+
+    try:
+        if token.startswith('Bearer '):
+            token = token[7:]
+        data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        current_user = mongo.db.users.find_one({'_id': ObjectId(data['user_id'])})
+        if not current_user:
+            return jsonify({'message': 'User not found'}), 401
+    except Exception as e:
+        return jsonify({'message': f'Token is invalid: {str(e)}'}), 401
+
+    try:
+        # Find the event by ID
+        event = mongo.db.events.find_one({'_id': ObjectId(event_id)})
+
+        if not event:
+            return jsonify({'message': 'Event not found'}), 404
+
+        # Get all registered user IDs
+        registered_user_ids = event.get('registered_users', [])
+
+        # Fetch user details for all attendees
+        attendees_list = []
+        for user_id in registered_user_ids:
+            user = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+            if user:
+                attendees_list.append({
+                    'id': str(user['_id']),
+                    'first_name': user.get('first_name'),
+                    'last_name': user.get('last_name'),
+                    'profile_pic': user.get('profile_pic'),
+                    'school': user.get('school'),
+                    'grade_level': user.get('grade_level')
+                })
+
+        return jsonify({
+            'attendees': attendees_list,
+            'count': len(attendees_list)
+        }), 200
+
+    except Exception as e:
+        print(f"Error fetching attendees: {e}")
         return jsonify({'message': f'Server error: {str(e)}'}), 500
 
 @app.route('/api/events/all', methods=['GET', 'OPTIONS'])
